@@ -1,15 +1,15 @@
 #ifndef SPLAY_TREE
 #define SPLAY_TREE
 #include <utility>
-
+#include <functional>
 using namespace std;
 
-template<typename value, typename comparator = 	less<value>>
+template<typename value, typename comparator = 	less<value> >
 class splay_tree
 {
 public:
 	//Constructor
-	splay_tree();
+	splay_tree(comparator comp = comparator());
 	//Copy Constructor
 	splay_tree(const splay_tree& rhs);
 	//Copy Assignment
@@ -87,5 +87,44 @@ bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value
 
 template <typename value, typename comparator>
 bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
+//
+// Implementation starts here
+//
+template<typename value, typename comparator>
+splay_tree<value, comparator>::splay_tree(comparator comp) : comp(comp) {
+	root = head = tail = nullptr;
+	size = 0;
+}
 
+template<typename value, typename comparator>
+splay_tree<value, comparator>::splay_tree(const splay_tree& rhs) {
+	size = rhs.size;
+	comp = rhs.comp;
+
+	root = clone_tree(rhs.root);
+	
+	tail = head = root;
+	while(head->left)head = head->left;
+	while(head->right)head = head->right;
+}
+
+template<typename value, typename comparator>
+splay_tree<value, comparator>& 
+splay_tree<value, comparator>::operator=(const splay_tree& rhs) {
+	destroy_tree(root);
+	
+	size = rhs.size;
+	comp = rhs.comp;
+
+	root = clone_tree(rhs.root);
+
+	tail = head = root;
+	while(head->left_child_)head = head->left_child_;
+	while(head->right_child_)head = head->right_child_;	
+}
+
+template<typename value, typename comparator>
+splay_tree<value, comparator>::~splay_tree(){
+
+}
 #endif
