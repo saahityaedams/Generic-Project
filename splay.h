@@ -66,7 +66,7 @@ private:
 	
 	node* clone_tree(node * clone_from, node * parent);
 	
-	node* destroy_tree(node * clone_from);
+	void destroy_tree(node * parent);
 
 	pair<node*, node*> find_node(const value& val) const;
 		
@@ -139,9 +139,11 @@ splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent) {
 }
 
 template<typename value, typename comparator>
-typename splay_tree<value, comparator>::node* 
-splay_tree<value, comparator>::destroy_tree(node * clone_from) {
-	
+void splay_tree<value, comparator>::destroy_tree(node* parent) {
+	if(parent == nullptr)	return;
+	destroy_tree(parent->left_child_);
+	destroy_tree(parent->right_child_);
+	delete parent;
 }
 
 template<typename value, typename comparator>
