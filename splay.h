@@ -1,5 +1,6 @@
 #ifndef SPLAY_TREE
 #define SPLAY_TREE
+#include<iostream>
 #include <utility>
 #include <functional>
 using namespace std;
@@ -108,8 +109,10 @@ splay_tree<value, comparator>::splay_tree(const splay_tree& rhs) {
 	root = clone_tree(rhs.root, nullptr);
 	
 	tail = head = root;
-	while(head->left)head = head->left;
-	while(head->right)head = head->right;
+	if(head != nullptr) {
+		while(head->left_child_)head = head->left_child_;
+		while(head->right_child_)head = head->right_child_;
+	}
 }
 
 template<typename value, typename comparator>
@@ -121,10 +124,11 @@ splay_tree<value, comparator>::operator=(const splay_tree& rhs) {
 	comp = rhs.comp;
 
 	root = clone_tree(rhs.root, nullptr);
-
 	tail = head = root;
-	while(head->left_child_)head = head->left_child_;
-	while(head->right_child_)head = head->right_child_;	
+	if(head != nullptr) {
+		while(head->left_child_)	head = head->left_child_;
+		while(head->right_child_)	head = head->right_child_;
+	}
 }
 
 template<typename value, typename comparator>
