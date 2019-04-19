@@ -52,7 +52,7 @@ private:
 		node* right_child_;
 		node* parent_;
 
-		node(const value& val);
+		node(const value& val): node_value_(val) {}
 	};
 
 	node* head, *tail;
@@ -63,6 +63,10 @@ private:
 	void rotate_up(node* child) const;
 
 	void splay(node* n) const;
+	
+	node* clone_tree(node * clone_from, node * parent);
+	
+	node* destroy_tree(node * clone_from);
 
 	pair<node*, node*> find_node(const value& val) const;
 		
@@ -101,7 +105,7 @@ splay_tree<value, comparator>::splay_tree(const splay_tree& rhs) {
 	size = rhs.size;
 	comp = rhs.comp;
 
-	root = clone_tree(rhs.root);
+	root = clone_tree(rhs.root, nullptr);
 	
 	tail = head = root;
 	while(head->left)head = head->left;
@@ -116,7 +120,7 @@ splay_tree<value, comparator>::operator=(const splay_tree& rhs) {
 	size = rhs.size;
 	comp = rhs.comp;
 
-	root = clone_tree(rhs.root);
+	root = clone_tree(rhs.root, nullptr);
 
 	tail = head = root;
 	while(head->left_child_)head = head->left_child_;
@@ -124,7 +128,24 @@ splay_tree<value, comparator>::operator=(const splay_tree& rhs) {
 }
 
 template<typename value, typename comparator>
-splay_tree<value, comparator>::~splay_tree(){
+typename splay_tree<value, comparator>::node* 
+splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent) {
+	if(clone_from == nullptr)	return nullptr;
+	node* new_node = new node(clone_from->node_value_);
+	new_node->node_value_ = clone_from->node_value_;
+	new_node->parent_ = parent;
+	new_node->left_child_ = clone_tree(clone_from->left_child_,new_node);
+	new_node->right_child_ = clone_tree(clone_from->right_child_, new_node);
+}
 
+template<typename value, typename comparator>
+typename splay_tree<value, comparator>::node* 
+splay_tree<value, comparator>::destroy_tree(node * clone_from) {
+	
+}
+
+template<typename value, typename comparator>
+splay_tree<value, comparator>::~splay_tree(){
+	
 }
 #endif
