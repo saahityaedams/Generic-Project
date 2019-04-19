@@ -1,0 +1,28 @@
+
+Set implemented as a splay tree	
+Comparator predicate
+
+canonical functions:
+ctor
+dtor
+copy
+assignment
+move ctor
+move assignment
+
+iterators:
+bidirectional iterator
+const iterator?
+
+methods:
+insert
+erase
+find
+begin
+end
+?lower bound
+?upper bound
+?empty
+rotateUp
+splay
+findNode 	
