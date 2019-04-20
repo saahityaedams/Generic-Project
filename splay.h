@@ -10,14 +10,19 @@ class splay_tree
 public:
 	//Constructor
 	splay_tree();
+
 	//Copy Constructor
 	splay_tree(const splay_tree& rhs);
+	
 	//Copy Assignment
 	splay_tree& operator=(const splay_tree& rhs);
+	
 	//Move Constructor
 	splay_tree(splay_tree&& rhs);
+	
 	//Move Assignment
 	splay_tree& operator=(splay_tree&& rhs);
+	
 	//Destructor
 	~splay_tree();
 
@@ -87,5 +92,13 @@ bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value
 
 template <typename value, typename comparator>
 bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
+
+
+//Implementation
+
+splay_tree::splay_tree(splay_tree&& rhs):
+{
+
+}
 
 #endif
