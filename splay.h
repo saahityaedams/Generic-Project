@@ -11,7 +11,10 @@ class splay_tree
 public:
 	//Constructor
 	splay_tree();
+
+	//Default constructor when given conparator
 	splay_tree(comparator comp = comparator());
+
 	//Copy Constructor
 	splay_tree(const splay_tree& rhs);
 	
@@ -45,8 +48,6 @@ public:
 	//Finds value and returns iterator to it
 	Iterator find(const value& val);
 
-	//is operator[] needed for set?
-
 	//Checks whether set is empty
 	bool empty() const;
 
@@ -63,6 +64,7 @@ private:
 
 	node* head, *tail;
 	node* root;
+	
 	comparator comp;
 	size_t size;
 
@@ -101,24 +103,18 @@ bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value,
 
 //Implementation
 
-splay_tree::splay_tree(splay_tree&& rhs):
-{
-
-}
-
-#endif
-=======
-//
-// Implementation starts here
-//
+//Default constructor when given conparator
 template<typename value, typename comparator>
-splay_tree<value, comparator>::splay_tree(comparator comp) : comp(comp) {
+splay_tree<value, comparator>::splay_tree(comparator comp) : comp(comp) 
+{
 	root = head = tail = nullptr;
 	size = 0;
 }
 
+//Copy Constructor
 template<typename value, typename comparator>
-splay_tree<value, comparator>::splay_tree(const splay_tree& rhs) {
+splay_tree<value, comparator>::splay_tree(const splay_tree& rhs) 
+{
 	size = rhs.size;
 	comp = rhs.comp;
 
@@ -131,9 +127,11 @@ splay_tree<value, comparator>::splay_tree(const splay_tree& rhs) {
 	}
 }
 
+//Copy Assignment
 template<typename value, typename comparator>
 splay_tree<value, comparator>& 
-splay_tree<value, comparator>::operator=(const splay_tree& rhs) {
+splay_tree<value, comparator>::operator=(const splay_tree& rhs) 
+{
 	destroy_tree(root);
 	
 	size = rhs.size;
@@ -142,15 +140,51 @@ splay_tree<value, comparator>::operator=(const splay_tree& rhs) {
 	root = clone_tree(rhs.root, nullptr);
 	tail = head = root;
 	if(head != nullptr) {
-		while(head->left_child_)	head = head->left_child_;
-		while(head->right_child_)	head = head->right_child_;
+		while(head->left_child_)	
+			head = head->left_child_;
+		while(head->right_child_)	
+			head = head->right_child_;
 	}
 }
 
 template<typename value, typename comparator>
+splay_tree<value, comparator>::splay_tree(splay_tree&& rhs)
+: size(rhs.size), comp(rhs.comp), root(rhs.root), tail(rhs.tail), head(rhs.head)
+{
+	rhs.root = rhs.tail = rhs.head = nullptr;
+}
+
+template<typename value, typename comparator>
+splay_tree<value, comparator>&
+splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
+{
+	if(this != &rhs)
+	{
+		destroy_tree(root);
+//		delete head;
+//		delete tail;
+		root = rhs.root;
+		head = rhs.head;
+		tail = rhs.tail;
+		rhs.root = rhs.tail = rhs.head = nullptr;
+		size = rhs.size;
+		comp = rhs.comp;
+	}
+	return *this;
+}
+
+template<typename value, typename comparator>
+splay_tree<value, comparator>::~splay_tree()
+{
+	destroy_tree(root);
+}
+
+template<typename value, typename comparator>
 typename splay_tree<value, comparator>::node* 
-splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent) {
-	if(clone_from == nullptr)	return nullptr;
+splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent) 
+{
+	if(clone_from == nullptr)	
+		return nullptr;
 	node* new_node = new node(clone_from->node_value_);
 	new_node->node_value_ = clone_from->node_value_;
 	new_node->parent_ = parent;
@@ -159,15 +193,13 @@ splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent) {
 }
 
 template<typename value, typename comparator>
-void splay_tree<value, comparator>::destroy_tree(node* parent) {
-	if(parent == nullptr)	return;
+void splay_tree<value, comparator>::destroy_tree(node* parent) 
+{
+	if(parent == nullptr)	
+		return;
 	destroy_tree(parent->left_child_);
 	destroy_tree(parent->right_child_);
 	delete parent;
 }
 
-template<typename value, typename comparator>
-splay_tree<value, comparator>::~splay_tree(){
-	
-}
 #endif
