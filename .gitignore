@@ -1,0 +1,8 @@
+#ignore the test code
+test.cpp
+
+#ignore the .gch file
+*.gch
+
+#ignore the executable
+a.out
