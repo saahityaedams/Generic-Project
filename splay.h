@@ -10,7 +10,7 @@ class splay_tree
 {
 public:
 	//Constructor
-	splay_tree();
+//	splay_tree();
 
 	//Default constructor when given conparator
 	splay_tree(comparator comp = comparator());
@@ -123,7 +123,7 @@ splay_tree<value, comparator>::splay_tree(const splay_tree& rhs)
 	tail = head = root;
 	if(head != nullptr) {
 		while(head->left_child_)head = head->left_child_;
-		while(head->right_child_)head = head->right_child_;
+		while(tail->right_child_)tail = tail->right_child_;
 	}
 }
 
@@ -142,8 +142,8 @@ splay_tree<value, comparator>::operator=(const splay_tree& rhs)
 	if(head != nullptr) {
 		while(head->left_child_)	
 			head = head->left_child_;
-		while(head->right_child_)	
-			head = head->right_child_;
+		while(tail->right_child_)	
+			tail = tail->right_child_;
 	}
 }
 
