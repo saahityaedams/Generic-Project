@@ -13,31 +13,31 @@ public:
 //	splay_tree();
 
 	//Default constructor when given conparator
-	splay_tree(comparator comp = comparator());
+	splay_tree(comparator comp = comparator()); //DONE
 
 	//Copy Constructor
-	splay_tree(const splay_tree& rhs);
+	splay_tree(const splay_tree& rhs);	//DONE
 	
 	//Copy Assignment
-	splay_tree& operator=(const splay_tree& rhs);
+	splay_tree& operator=(const splay_tree& rhs);	//DONE
 	
 	//Move Constructor
-	splay_tree(splay_tree&& rhs);
+	splay_tree(splay_tree&& rhs);	//DONE
 	
 	//Move Assignment
-	splay_tree& operator=(splay_tree&& rhs);
+	splay_tree& operator=(splay_tree&& rhs);	//DONE
 	
 	//Destructor
-	~splay_tree();
+	~splay_tree();	//DONE
 
 	//Iterator Class
 	class Iterator;
 	
 	//Returns iterator to first element of set
-	Iterator begin();
+	Iterator begin();	//DONE
 
 	//Returns iterator to last element of set
-	Iterator end();
+	Iterator end();		//DONE
 
 	//Inserts element and returns iterator to that element
 	Iterator insert(const value& val);
@@ -49,7 +49,7 @@ public:
 	Iterator find(const value& val);
 
 	//Checks whether set is empty
-	bool empty() const;
+	bool empty() const;	//DONE
 
 private:
 	struct node
@@ -190,6 +190,7 @@ splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent)
 	new_node->parent_ = parent;
 	new_node->left_child_ = clone_tree(clone_from->left_child_,new_node);
 	new_node->right_child_ = clone_tree(clone_from->right_child_, new_node);
+	return new_node;
 }
 
 template<typename value, typename comparator>
@@ -201,5 +202,26 @@ void splay_tree<value, comparator>::destroy_tree(node* parent)
 	destroy_tree(parent->right_child_);
 	delete parent;
 }
+
+template<typename value, typename comparator>
+typename splay_tree<value, comparator>::Iterator
+splay_tree<value, comparator>::begin()
+{
+	return Iterator(head);
+}
+
+template<typename value, typename comparator>
+typename splay_tree<value, comparator>::Iterator
+splay_tree<value, comparator>::end()
+{
+	return Iterator(tail);
+}
+
+template<typename value, typename comparator>
+bool splay_tree<value, comparator>::empty() const
+{
+	return (size == 0);
+}
+
 
 #endif
