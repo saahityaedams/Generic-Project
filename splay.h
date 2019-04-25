@@ -130,7 +130,7 @@ splay_tree<value, comparator>::splay_tree(const splay_tree& rhs)
 //Copy Assignment
 template<typename value, typename comparator>
 splay_tree<value, comparator>& 
-splay_tree<value, comparator>::operator=(const splay_tree& rhs) 
+	splay_tree<value, comparator>::operator=(const splay_tree& rhs) 
 {
 	destroy_tree(root);
 	
@@ -156,7 +156,7 @@ splay_tree<value, comparator>::splay_tree(splay_tree&& rhs)
 
 template<typename value, typename comparator>
 splay_tree<value, comparator>&
-splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
+	splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
 {
 	if(this != &rhs)
 	{
@@ -181,7 +181,7 @@ splay_tree<value, comparator>::~splay_tree()
 
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::node* 
-splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent) 
+	splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent) 
 {
 	if(clone_from == nullptr)	
 		return nullptr;
@@ -205,14 +205,14 @@ void splay_tree<value, comparator>::destroy_tree(node* parent)
 
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
-splay_tree<value, comparator>::begin()
+	splay_tree<value, comparator>::begin()
 {
 	return Iterator(head);
 }
 
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
-splay_tree<value, comparator>::end()
+	splay_tree<value, comparator>::end()
 {
 	return Iterator(tail);
 }
@@ -222,6 +222,11 @@ bool splay_tree<value, comparator>::empty() const
 {
 	return (size == 0);
 }
+template<typename value, typename comparator>
+typename splay_tree<value, comparator>::Iterator
+	splay_tree::insert(const value& val)
+{
 
+}
 
 #endif
