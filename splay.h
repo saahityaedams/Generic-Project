@@ -40,13 +40,13 @@ public:
 	Iterator end();		//DONE
 
 	//Inserts element and returns iterator to that element
-	Iterator insert(const value& val);
+	pair<Iterator, bool> insert(const value& val);
 
 	//Not sure whether to erase given a value or given an iterator
-	Iterator erase(const value& val);
+	pair<Iterator, bool> erase(const value& val);
 
 	//Finds value and returns iterator to it
-	Iterator find(const value& val);
+	pair<Iterator, bool> find(const value& val);
 
 	//Checks whether set is empty
 	bool empty() const;	//DONE
@@ -67,6 +67,8 @@ private:
 	
 	comparator comp;
 	size_t size;
+	
+	node* insert( node* root, const value& val);
 
 	void rotate_up(node* child) const;
 
@@ -223,10 +225,21 @@ bool splay_tree<value, comparator>::empty() const
 	return (size == 0);
 }
 template<typename value, typename comparator>
-typename splay_tree<value, comparator>::Iterator
-	splay_tree::insert(const value& val)
+pair<typename splay_tree<value, comparator>::Iterator, bool>
+	splay_tree<value, comparator>::insert(const value& val)
+{
+	node* new_node = new node(val);
+	if(empty())
+	{
+			head = tail = root = new_node;
+			return pair<Iterator, bool>(Iterator(head), true);
+	}
+	insert(root, val);
+}
+template<typename value, typename comparator>
+typename splay_tree<value, comparator>::node* 
+	insert(typename splay_tree<value, comparator>::node*, const value& val)
 {
 
 }
-
 #endif
