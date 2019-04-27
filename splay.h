@@ -68,7 +68,7 @@ private:
 	comparator comp;
 	size_t size;
 	
-	node* insert( node* root, const value& val);
+	node* insert_node( node* root, const value& val);
 
 	void rotate_up(node* child) const;
 
@@ -228,18 +228,33 @@ template<typename value, typename comparator>
 pair<typename splay_tree<value, comparator>::Iterator, bool>
 	splay_tree<value, comparator>::insert(const value& val)
 {
+	//first searching in the tree if the value exists
+	auto find_pair = find(val);
+	//if already exists returning the iterator and false 
+	if(find_pair.second)	return pair<find_pair.first, !find_pair.second>;	
 	node* new_node = new node(val);
+	//if empty make new node and assign appropriately and returns
 	if(empty())
 	{
 			head = tail = root = new_node;
 			return pair<Iterator, bool>(Iterator(head), true);
 	}
-	insert(root, val);
+	insert_node(root, val);
+
 }
+
+//should  set the parent pointer
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::node* 
-	insert(typename splay_tree<value, comparator>::node*, const value& val)
+	insert_node(typename splay_tree<value, comparator>::node* node_, const value& val)
 {
+	if (node_ == nullptr) return new node(val); 
 
+	if (key < node_->node_value_) 
+		node_->left  = insert_node(node_->left_child_, key); 
+	else if (key > node_->node_value_) 
+		node_->right = insert_node(node_->right_child_, key);    
+	//this case shouldnt happen
+	return node; 
 }
 #endif
