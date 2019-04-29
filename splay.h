@@ -68,7 +68,7 @@ private:
 	comparator comp;
 	size_t size;
 	
-	node* insert_node( node* root, const value& val);
+	node* insert_node( node* root, node* parent_node, const value& val);
 
 	void rotate_up(node* child) const;
 
@@ -231,7 +231,7 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 	//first searching in the tree if the value exists
 	auto find_pair = find(val);
 	//if already exists returning the iterator and false 
-	if(find_pair.second)	return pair<find_pair.first, !find_pair.second>;	
+	if(find_pair.second)	return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, !find_pair.second);	
 	node* new_node = new node(val);
 	//if empty make new node and assign appropriately and returns
 	if(empty())
@@ -239,22 +239,26 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 			head = tail = root = new_node;
 			return pair<Iterator, bool>(Iterator(head), true);
 	}
-	insert_node(root, val);
+	insert_node(root, nullptr,  val);
 
 }
 
 //should  set the parent pointer
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::node* 
-	insert_node(typename splay_tree<value, comparator>::node* node_, const value& val)
+	insert_node(typename splay_tree<value, comparator>::node* node_, typename splay_tree<value, comparator>::node* parent_node_, const value& val)
 {
-	if (node_ == nullptr) return new node(val); 
-
-	if (key < node_->node_value_) 
-		node_->left  = insert_node(node_->left_child_, key); 
-	else if (key > node_->node_value_) 
-		node_->right = insert_node(node_->right_child_, key);    
+	if (node_ == nullptr)
+	{ 
+		typename splay_tree<value, comparator>::node *new_node_ = typename splay_tree<value, comparator>::node(val);
+		new_node_->parent = parent_node_;
+		return new_node_; 
+	}
+	if (val < node_->node_value_) 
+		node_->left  = insert_node(node_->left_child_, node_, val); 
+	else if (val > node_->node_value_) 
+		node_->right = insert_node(node_->right_child_, node_ , val);    
 	//this case shouldnt happen
-	return node; 
+	return node_; 
 }
 #endif
