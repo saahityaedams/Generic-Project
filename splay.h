@@ -240,7 +240,8 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 			return pair<Iterator, bool>(Iterator(head), true);
 	}
 	insert_node(root, nullptr,  val);
-
+	find_pair = find(val);
+	return find_pair;
 }
 
 //should  set the parent pointer
