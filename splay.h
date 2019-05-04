@@ -59,7 +59,7 @@ private:
 		node* right_child_;
 		node* parent_;
 
-		node(const value& val): node_value_(val) {}
+		node(const value& val): node_value_(val) {} //Is this allowed? Do we need to malloc?
 	};
 
 	node* head, *tail;
@@ -70,7 +70,7 @@ private:
 	
 	node* insert_node( node* root, node* parent_node, const value& val);
 
-	void rotate_up(node* child) const;
+	void rotate_up(node* node_);
 
 	void splay(node* n) const;
 	
@@ -181,6 +181,7 @@ splay_tree<value, comparator>::~splay_tree()
 	destroy_tree(root);
 }
 
+//Clone tree
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::node* 
 	splay_tree<value, comparator>::clone_tree(node* clone_from, node* parent) 
@@ -195,6 +196,7 @@ typename splay_tree<value, comparator>::node*
 	return new_node;
 }
 
+//Destroy Tree
 template<typename value, typename comparator>
 void splay_tree<value, comparator>::destroy_tree(node* parent) 
 {
@@ -205,6 +207,7 @@ void splay_tree<value, comparator>::destroy_tree(node* parent)
 	delete parent;
 }
 
+//Return Iterator begin
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::begin()
@@ -212,6 +215,7 @@ typename splay_tree<value, comparator>::Iterator
 	return Iterator(head);
 }
 
+//Return Iterator end
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::end()
@@ -219,19 +223,23 @@ typename splay_tree<value, comparator>::Iterator
 	return Iterator(tail);
 }
 
+//Return if size of tree is null
 template<typename value, typename comparator>
 bool splay_tree<value, comparator>::empty() const
 {
 	return (size == 0);
 }
+
+//Insert value into tree
 template<typename value, typename comparator>
 pair<typename splay_tree<value, comparator>::Iterator, bool>
-	splay_tree<value, comparator>::insert(const value& val)
+splay_tree<value, comparator>::insert(const value& val)
 {
 	//first searching in the tree if the value exists
 	auto find_pair = find(val);
 	//if already exists returning the iterator and false 
-	if(find_pair.second)	return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, !find_pair.second);	
+	if(find_pair.second)	
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, !find_pair.second);	
 	node* new_node = new node(val);
 	//if empty make new node and assign appropriately and returns
 	if(empty())
@@ -240,9 +248,9 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 			return pair<Iterator, bool>(Iterator(head), true);
 	}
 	insert_node(root, nullptr,  val);
-
 }
 
+//Insert Node??
 //should  set the parent pointer
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::node* 
@@ -261,4 +269,55 @@ typename splay_tree<value, comparator>::node*
 	//this case shouldnt happen
 	return node_; 
 }
+
+template<typename value, typename comparator>
+void splay_tree<value, comparator>::rotate_up(splay_tree<value, comparator>::node* node_)
+{
+	node* parent, grandparent;
+	if(node_->parent_)
+		parent = node_->parent_;
+	else
+		return;
+
+	if(node_->parent_->parent_)
+		grandparent = node_->parent_->parent_;
+
+	if(node_->parent_->left_child_ == node_)
+	{
+		node* child = node_->right_child_;
+		node_->right_child_ = parent;
+		if(child)
+		{
+			parent->left_child_ = child;
+			child->parent_ = parent;
+		}
+		else
+			parent->left_child = nullptr;
+	}
+
+	else
+	{
+		node* child = node->left_child_;
+		node_->left_child_ = parent;
+		if(child)
+		{
+			parent->right_child = child;
+			child->parent_ = parent;
+		}
+		else
+			parent->right_child = nullptr;
+	}
+	parent->parent_ = node;
+	if(grandparent)
+	{
+		node_->parent_ = grandparent;
+		if(grandparent->left_child_ == parent)
+			grandparent->left_child_ = node;
+		else
+			grandparent->right_child_ = node;
+	}
+	else
+		node->parent_ = nullptr;	
+}
+
 #endif
