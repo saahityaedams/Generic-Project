@@ -245,9 +245,11 @@ splay_tree<value, comparator>::insert(const value& val)
 	if(empty())
 	{
 			head = tail = root = new_node;
-			return pair<Iterator, bool>(Iterator(head), true);
+			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
 	insert_node(root, nullptr,  val);
+	find_pair = find(val);
+	return find_pair;
 }
 
 //Insert Node??

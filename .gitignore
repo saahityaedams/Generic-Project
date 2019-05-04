@@ -1,5 +1,5 @@
 #ignore the test code
-test.cpp
+#test.cpp
 
 #ignore the .gch file
 *.gch
