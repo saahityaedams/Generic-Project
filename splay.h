@@ -43,10 +43,10 @@ public:
 	pair<Iterator, bool> insert(const value& val);
 
 	//Not sure whether to erase given a value or given an iterator
-	pair<Iterator, bool> erase(const value& val);
+	pair<Iterator, bool> erase(const value& val) const;
 
 	//Finds value and returns iterator to it
-	pair<Iterator, bool> find(const value& val);
+	pair<Iterator, bool> find(const value& val) const;
 
 	//Checks whether set is empty
 	bool empty() const;	//DONE
@@ -149,6 +149,7 @@ splay_tree<value, comparator>&
 	}
 }
 
+//Move Constructor
 template<typename value, typename comparator>
 splay_tree<value, comparator>::splay_tree(splay_tree&& rhs)
 : size(rhs.size), comp(rhs.comp), root(rhs.root), tail(rhs.tail), head(rhs.head)
@@ -156,9 +157,10 @@ splay_tree<value, comparator>::splay_tree(splay_tree&& rhs)
 	rhs.root = rhs.tail = rhs.head = nullptr;
 }
 
+//Move Assignment
 template<typename value, typename comparator>
-splay_tree<value, comparator>&
-	splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
+splay_tree<value, comparator>& 
+splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
 {
 	if(this != &rhs)
 	{
@@ -175,6 +177,7 @@ splay_tree<value, comparator>&
 	return *this;
 }
 
+//Destructor
 template<typename value, typename comparator>
 splay_tree<value, comparator>::~splay_tree()
 {
@@ -299,7 +302,7 @@ void splay_tree<value, comparator>::rotate_up(splay_tree<value, comparator>::nod
 
 	else
 	{
-		node* child = node->left_child_;
+		node* child = node_->left_child_;
 		node_->left_child_ = parent;
 		if(child)
 		{
@@ -309,17 +312,103 @@ void splay_tree<value, comparator>::rotate_up(splay_tree<value, comparator>::nod
 		else
 			parent->right_child = nullptr;
 	}
-	parent->parent_ = node;
+	parent->parent_ = node_;
 	if(grandparent)
 	{
 		node_->parent_ = grandparent;
 		if(grandparent->left_child_ == parent)
-			grandparent->left_child_ = node;
+			grandparent->left_child_ = node_;
 		else
-			grandparent->right_child_ = node;
+			grandparent->right_child_ = node_;
 	}
 	else
-		node->parent_ = nullptr;	
+		node_->parent_ = nullptr;	
 }
+
+template<typename value, typename comparator>
+class splay_tree<value, comparator>::Iterator
+{
+public:
+	explicit Iterator(node* node_ = nullptr) : iter(node_){	}
+	bool operator==(const Iterator& rhs) const
+	{
+		return iter == rhs.iter;
+	}
+	bool operator!=(const Iterator& rhs) const
+	{
+		return !(*this == rhs);
+	}
+	node operator*()const
+	{
+		return *iter->node_value;
+	}
+	Iterator& operator++()	//pre increment
+	{
+		//logic to move forward in binary tree
+		if(iter->right_child_)
+		{
+			iter = iter->right_child_;
+			return *this;
+		}
+		if(iter->parent_)
+		{
+			if(iter->parent_->left_child_ == iter) //left_child with no children
+			{
+				iter = iter->parent_;
+				return *this;
+			}
+			else
+			{
+				if(iter->parent_->parent_)
+					iter = iter->parent_;
+				/*else
+					cout << "Cannot increment further";*/
+			}
+			
+		}
+		return *this;
+	}
+	Iterator operator++(int)	//post increment
+	{
+		Iterator temp(*this);
+		++*this;
+		return temp;
+	}
+	Iterator& operator--()
+	{
+		//logic to move backward in binary tree
+		if(iter->left_child_)
+		{
+			iter = iter->left_child_;
+			return *this;
+		}
+		if(iter->parent_)
+		{
+			if(iter->parent_->right_child_ == iter) //right child with no children
+			{
+				iter = iter->parent_;
+				return *this;
+			}
+			else
+			{
+				if(iter->parent_->parent_)
+					iter = iter->parent_;
+				/*else
+					cout << "Cannot decrement further";*/
+			}
+			
+		}
+		return *this;
+	}
+	Iterator operator--(int)
+	{
+		Iterator temp(*this);
+		--*this;
+		return temp;
+	}
+
+private:
+	node* iter;
+};
 
 #endif
