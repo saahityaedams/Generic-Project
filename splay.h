@@ -69,21 +69,22 @@ private:
 	size_t size;
 	
 	// node* insert_node( node* root, node* parent_node, const value& val);
- node* insert_node(node* node_, node* parent_node_, const value& val)
-{
-	if (node_ == nullptr)
-	{ 
-		node *new_node_ = new splay_tree<value, comparator>::node(val);
-		new_node_->parent_ = parent_node_;
-		return new_node_; 
+	node* insert_node(node* node_, node* parent_node_, const value& val)
+	{
+		if (node_ == nullptr)
+		{ 
+			node *new_node_ = new splay_tree<value, comparator>::node(val);
+			new_node_->parent_ = parent_node_;
+			return new_node_;
+			++size;
+		}
+		if (val < node_->node_value_) 
+			node_->left_child_  = insert_node(node_->left_child_, node_, val); 
+		else if (val > node_->node_value_) 
+			node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
+		//this case shouldnt happen
+		return node_; 
 	}
-	if (val < node_->node_value_) 
-		node_->left_child_  = insert_node(node_->left_child_, node_, val); 
-	else if (val > node_->node_value_) 
-		node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
-	//this case shouldnt happen
-	return node_; 
-}
 
 	void rotate_up(node* node_);
 
@@ -93,7 +94,17 @@ private:
 	
 	void destroy_tree(node * parent);
 
-	pair<node*, node*> find_node(const value& val) const;
+	node* find_node(const value& val, node* curr_node) const
+	{
+		if(!curr_node)
+			return curr_node;
+		else if(curr_node->node_value_ == val)
+			return  curr_node;
+		else if(curr_node->node_value_ < val)
+			return  find_node(val, curr_node->right_child_);
+		else
+			return  find_node(val, curr_node->left_child_);
+	}
 		
 };
 
@@ -255,14 +266,15 @@ splay_tree<value, comparator>::insert(const value& val)
 {
 	//first searching in the tree if the value exists
 	auto find_pair = find(val);
-	// //if already exists returning the iterator and false 
-	if(find_pair.second)	
+	// //if already exists returning the iterator and false
+	if(find_pair.second)
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, !find_pair.second);	
 	node* new_node = new node(val);
 	//if empty make new node and assign appropriately and returns
 	if(empty())
 	{
 			head = tail = root = new_node;
+			++size;
 			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
 	insert_node(root, nullptr,  val);
@@ -274,7 +286,11 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 splay_tree<value, comparator>::find(const value& val) const
 {
 	// begin();
-	return pair<typename splay_tree<value, comparator>::Iterator, bool>(begin(), true);
+	node* target_node = find_node(val, head);
+	if(target_node)	
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(target_node), true);
+	else
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(target_node), false);
 }
 
 template<typename value, typename comparator>
@@ -342,7 +358,8 @@ public:
 	}
 	value operator*()const
 	{
-		return iter->node_value_;;
+		if(iter) return iter->node_value_;
+		return value();
 	}
 	Iterator& operator++()	//pre increment
 	{
