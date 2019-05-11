@@ -6,3 +6,6 @@
 
 #ignore the executable
 a.out
+
+#ignore vscode
+.vscode/*

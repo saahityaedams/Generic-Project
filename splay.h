@@ -34,7 +34,7 @@ public:
 	class Iterator;
 	
 	//Returns iterator to first element of set
-	Iterator begin();	//DONE
+	Iterator begin() const;	//DONE
 
 	//Returns iterator to last element of set
 	Iterator end();		//DONE
@@ -47,7 +47,7 @@ public:
 
 	//Finds value and returns iterator to it
 	pair<Iterator, bool> find(const value& val) const;
-
+	
 	//Checks whether set is empty
 	bool empty() const;	//DONE
 
@@ -68,17 +68,100 @@ private:
 	comparator comp;
 	size_t size;
 	
-	node* insert_node( node* root, node* parent_node, const value& val);
+	// node* insert_node( node* root, node* parent_node, const value& val);
+	node* insert_node(node* node_, node* parent_node_, const value& val)
+	{
+		if (node_ == nullptr)
+		{ 
+			node *new_node_ = new splay_tree<value, comparator>::node(val);
+			new_node_->parent_ = parent_node_;
+			return new_node_;
+			++size;
+		}
+		if (val < node_->node_value_) 
+			node_->left_child_  = insert_node(node_->left_child_, node_, val); 
+		else if (val > node_->node_value_) 
+			node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
+		//this case shouldnt happen
+		rotate_up(node_);
+		return node_; 
+	}
 
-	void rotate_up(node* node_);
+	void rotate_up(node* node_)
+	{
 
-	void splay(node* n) const;
+		cout <<"ROTATING";
+		struct node* parent;
+		struct node* grandparent;
+#if 1
+		if(node_->parent_)
+			parent = node_->parent_;
+		else
+			return;
+
+		if(node_->parent_->parent_)
+			grandparent = node_->parent_->parent_;
+
+		if(node_->parent_->left_child_ == node_)
+		{
+			node* child = node_->right_child_;
+			node_->right_child_ = parent;
+			if(child)
+			{
+				parent->left_child_ = child;
+				child->parent_ = parent;
+			}
+			else
+				parent->left_child_ = nullptr;
+		}
+
+		else
+		{
+			node* child = node_->left_child_;
+			node_->left_child_ = parent;
+			if(child)
+			{
+				parent->right_child_ = child;
+				child->parent_ = parent;
+			}
+			else
+				parent->right_child_ = nullptr;
+		}
+		parent->parent_ = node_;
+		if(grandparent)
+		{
+			node_->parent_ = grandparent;
+			if(grandparent->left_child_ == parent)
+				grandparent->left_child_ = node_;
+			else
+				grandparent->right_child_ = node_;
+		}
+		else
+			node_->parent_ = nullptr;
+#endif
+	//return 1;
+	}
+
+	/*void splay(node* node_) const
+	{
+
+	}*/
 	
-	node* clone_tree(node * clone_from, node * parent);
+	node* clone_tree(node* clone_from, node* parent);
 	
-	void destroy_tree(node * parent);
+	void destroy_tree(node* parent);
 
-	pair<node*, node*> find_node(const value& val) const;
+	node* find_node(const value& val, node* curr_node) const
+	{
+		if(!curr_node)
+			return curr_node;
+		else if(curr_node->node_value_ == val)
+			return  curr_node;
+		else if(curr_node->node_value_ < val)
+			return  find_node(val, curr_node->right_child_);
+		else
+			return  find_node(val, curr_node->left_child_);
+	}
 		
 };
 
@@ -213,7 +296,7 @@ void splay_tree<value, comparator>::destroy_tree(node* parent)
 //Return Iterator begin
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
-	splay_tree<value, comparator>::begin()
+	splay_tree<value, comparator>::begin() const
 {
 	return Iterator(head);
 }
@@ -233,51 +316,49 @@ bool splay_tree<value, comparator>::empty() const
 	return (size == 0);
 }
 
-//Insert value into tree
+// Insert value into tree
 template<typename value, typename comparator>
 pair<typename splay_tree<value, comparator>::Iterator, bool>
 splay_tree<value, comparator>::insert(const value& val)
 {
+	cout<< "INSERTING";
 	//first searching in the tree if the value exists
 	auto find_pair = find(val);
-	//if already exists returning the iterator and false 
-	if(find_pair.second)	
+	//if already exists returning the iterator and false
+	if(find_pair.second)
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, !find_pair.second);	
 	node* new_node = new node(val);
 	//if empty make new node and assign appropriately and returns
 	if(empty())
 	{
 			head = tail = root = new_node;
+			++size;
 			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
 	insert_node(root, nullptr,  val);
 	find_pair = find(val);
+	cout << "CALLING ROTATE";
 	return find_pair;
 }
 
-//Insert Node??
-//should  set the parent pointer
+//Finds value from tree. Have to add splaying
 template<typename value, typename comparator>
-typename splay_tree<value, comparator>::node* 
-	insert_node(typename splay_tree<value, comparator>::node* node_, typename splay_tree<value, comparator>::node* parent_node_, const value& val)
+pair<typename splay_tree<value, comparator>::Iterator, bool> 
+splay_tree<value, comparator>::find(const value& val) const
 {
-	if (node_ == nullptr)
-	{ 
-		typename splay_tree<value, comparator>::node *new_node_ = typename splay_tree<value, comparator>::node(val);
-		new_node_->parent = parent_node_;
-		return new_node_; 
-	}
-	if (val < node_->node_value_) 
-		node_->left  = insert_node(node_->left_child_, node_, val); 
-	else if (val > node_->node_value_) 
-		node_->right = insert_node(node_->right_child_, node_ , val);    
-	//this case shouldnt happen
-	return node_; 
+	// begin();
+	node* target_node = find_node(val, head);
+	if(target_node)	
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(target_node), true);
+	else
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(target_node), false);
 }
 
-template<typename value, typename comparator>
+//Shifts node to its parent
+/*template<typename value, typename comparator>
 void splay_tree<value, comparator>::rotate_up(splay_tree<value, comparator>::node* node_)
 {
+	cout <<"ROTATING";
 	node* parent, grandparent;
 	if(node_->parent_)
 		parent = node_->parent_;
@@ -323,8 +404,9 @@ void splay_tree<value, comparator>::rotate_up(splay_tree<value, comparator>::nod
 	}
 	else
 		node_->parent_ = nullptr;	
-}
+}*/
 
+//Iterator class definition
 template<typename value, typename comparator>
 class splay_tree<value, comparator>::Iterator
 {
@@ -338,9 +420,10 @@ public:
 	{
 		return !(*this == rhs);
 	}
-	node operator*()const
+	value operator*()const
 	{
-		return *iter->node_value;
+		if(iter) return iter->node_value_;
+		return value();
 	}
 	Iterator& operator++()	//pre increment
 	{
@@ -374,7 +457,7 @@ public:
 		++*this;
 		return temp;
 	}
-	Iterator& operator--()
+	Iterator& operator--()	//pre decrement
 	{
 		//logic to move backward in binary tree
 		if(iter->left_child_)
@@ -400,7 +483,7 @@ public:
 		}
 		return *this;
 	}
-	Iterator operator--(int)
+	Iterator operator--(int)	//post decrement
 	{
 		Iterator temp(*this);
 		--*this;
