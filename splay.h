@@ -3,53 +3,35 @@
 #include <iostream>
 #include <utility>
 #include <functional>
+
 using namespace std;
 
 template<typename value, typename comparator = 	less<value> >
 class splay_tree
 {
 public:
-	//Constructor
-//	splay_tree();
+	splay_tree(comparator comp = comparator());
+	splay_tree(const splay_tree& rhs);
+	splay_tree(splay_tree&& rhs);
+	
+	~splay_tree();
 
-	//Default constructor when given conparator
-	splay_tree(comparator comp = comparator()); //DONE
+	splay_tree& operator=(const splay_tree& rhs);
+	splay_tree& operator=(splay_tree&& rhs);
 
-	//Copy Constructor
-	splay_tree(const splay_tree& rhs);	//DONE
 	
-	//Copy Assignment
-	splay_tree& operator=(const splay_tree& rhs);	//DONE
-	
-	//Move Constructor
-	splay_tree(splay_tree&& rhs);	//DONE
-	
-	//Move Assignment
-	splay_tree& operator=(splay_tree&& rhs);	//DONE
-	
-	//Destructor
-	~splay_tree();	//DONE
 
 	//Iterator Class
 	class Iterator;
-	
-	//Returns iterator to first element of set
-	Iterator begin() const;	//DONE
 
-	//Returns iterator to last element of set
-	Iterator end();		//DONE
+	Iterator begin() const;
+	Iterator end() const;
 
-	//Inserts element and returns iterator to that element
 	pair<Iterator, bool> insert(const value& val);
-
-	//Not sure whether to erase given a value or given an iterator
-	pair<Iterator, bool> erase(const value& val) const;
-
-	//Finds value and returns iterator to it
+	pair<Iterator, bool> erase(const value& val);
 	pair<Iterator, bool> find(const value& val) ;
 	
-	//Checks whether set is empty
-	bool empty() const;	//DONE
+	bool empty() const;
 
 private:
 	struct node
@@ -59,7 +41,7 @@ private:
 		node* right_child_;
 		node* parent_;
 
-		node(const value& val): node_value_(val) {} //Is this allowed? Do we need to malloc?
+		node(const value& val): node_value_(val) {left_child_ = right_child_ = parent_ = nullptr;}
 	};
 
 	node* head, *tail;
@@ -67,14 +49,11 @@ private:
 	
 	comparator comp;
 	size_t size;
-	
-	// node* insert_node( node* root, node* parent_node, const value& val);
+	//REVIEW
 	node* insert_node(node* node_, node* parent_node_, const value& val)
 	{
-		//cout << endl << "in insert node" << val;
 		if (node_ == nullptr)
-		{ 
-			//cout << "inside check node";
+		{
 			node *new_node_ = new splay_tree<value, comparator>::node(val);
 			new_node_->parent_ = parent_node_;
 			return new_node_;
@@ -88,11 +67,8 @@ private:
 			node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
 			flag = 1;
 		}
-		//this case shouldnt happen
-		//cout << endl << "NODE" << node_->node_value_;
 		if(flag)
 		{
-			//cout << node_->right_child_->node_value_;
 			return node_->right_child_;
 		}
 		return node_->left_child_;
@@ -216,12 +192,49 @@ private:
 			return  find_node(val, curr_node->right_child_);
 		else
 			return  find_node(val, curr_node->left_child_);
+		//delete_node(head, 100);
 	}
-		
+	node* delete_node(node* root, value val)
+	{
+		if(root == nullptr)return root;
+
+		if(root->node_value_ > val)
+		{
+			root->left_child_ = delete_node(root->left_child_, val); 
+			return root; 
+		}
+		else if(root->node_value_ < val)
+		{
+			root->right_child_ = delete_node(root->right_child_, val); 
+			return root; 
+		}
+
+		if(!root->left_child_)
+		{
+			return root->right_child_;
+		}
+		else if(!root->right_child_)
+		{
+			return root->left_child_;
+		}
+		else
+		{
+			node* succ_parent = root->right_child_;
+			node* succ = root->right_child_;
+			while(succ->left_child_ != nullptr)
+			{
+				succ_parent = succ;
+				succ = succ->left_child_;
+			}
+			succ_parent->left_child_ = succ->right_child_;
+			root->node_value_ = succ->node_value_;
+			return root;
+		}
+	} 
 };
 
-//Comparison Operators
-
+//Comparison Operators - Why are we doing comparison of containers?
+/*
 template <typename value, typename comparator>
 bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
 
@@ -239,7 +252,7 @@ bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value
 
 template <typename value, typename comparator>
 bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
-
+*/
 
 //Implementation
 
@@ -288,6 +301,7 @@ splay_tree<value, comparator>&
 }
 
 //Move Constructor
+//REVIEW Why are we not destroying the original tree?
 template<typename value, typename comparator>
 splay_tree<value, comparator>::splay_tree(splay_tree&& rhs)
 : size(rhs.size), comp(rhs.comp), root(rhs.root), tail(rhs.tail), head(rhs.head)
@@ -319,7 +333,7 @@ splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
 template<typename value, typename comparator>
 splay_tree<value, comparator>::~splay_tree()
 {
-	destroy_tree(root);
+	// destroy_tree(root);
 }
 
 //Clone tree
@@ -339,7 +353,7 @@ typename splay_tree<value, comparator>::node*
 
 //Destroy Tree
 template<typename value, typename comparator>
-void splay_tree<value, comparator>::destroy_tree(node* parent) 
+void splay_tree<value, comparator>::destroy_tree(node* parent)
 {
 	if(parent == nullptr)	
 		return;
@@ -359,7 +373,7 @@ typename splay_tree<value, comparator>::Iterator
 //Return Iterator end
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
-	splay_tree<value, comparator>::end()
+	splay_tree<value, comparator>::end() const
 {
 	return Iterator(tail);
 }
@@ -376,26 +390,17 @@ template<typename value, typename comparator>
 pair<typename splay_tree<value, comparator>::Iterator, bool>
 splay_tree<value, comparator>::insert(const value& val)
 {
-	//cout<< "INSERTING" << val;
-	//first searching in the tree if the value exists
 	auto find_pair = find(val);
-	//if already exists returning the iterator and false
 	if(find_pair.second)
-	{
-		//cout << "Already exists";
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, !find_pair.second);	
-	}
-	//if empty make new node and assign appropriately and returns
+
 	if(empty())
 	{
-		//cout << "Empty" << val;
 			node* new_node = new node(val);
 			head = tail = root = new_node;
-			new_node->parent_ = nullptr;
 			++size;
 			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
-	//cout <<"Not empty "<< val;
 	node* new_node = insert_node(root, nullptr,  val);
 	splay(new_node);
 	find_pair = find(val);
@@ -412,12 +417,21 @@ splay_tree<value, comparator>::find(const value& val)
 	// begin();
 	//g++ << "FIND "<<root->node_value_;
 	node* target_node = find_node(val, root);
-	if(target_node)	
-		return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(target_node), true);
+	splay(target_node);
+	if(target_node)
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(splay_tree<value, comparator>::Iterator(target_node), true);
 	else
-		return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(target_node), false);
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(splay_tree<value, comparator>::Iterator(target_node), false);
 }
 
+template<typename value, typename comparator>
+pair<typename splay_tree<value, comparator>::Iterator, bool> 
+splay_tree<value, comparator>::erase(const value& val)
+{
+		cout << "Went in alive" << endl;
+		delete_node(root, val);
+		cout << "Got out alive" << endl;
+}
 //Shifts node to its parent
 /*template<typename value, typename comparator>
 void splay_tree<value, comparator>::rotate_up(splay_tree<value, comparator>::node* node_)
