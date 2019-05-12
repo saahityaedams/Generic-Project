@@ -46,7 +46,7 @@ public:
 	pair<Iterator, bool> erase(const value& val) const;
 
 	//Finds value and returns iterator to it
-	pair<Iterator, bool> find(const value& val) const;
+	pair<Iterator, bool> find(const value& val) ;
 	
 	//Checks whether set is empty
 	bool empty() const;	//DONE
@@ -71,39 +71,61 @@ private:
 	// node* insert_node( node* root, node* parent_node, const value& val);
 	node* insert_node(node* node_, node* parent_node_, const value& val)
 	{
+		//cout << endl << "in insert node" << val;
 		if (node_ == nullptr)
 		{ 
+			//cout << "inside check node";
 			node *new_node_ = new splay_tree<value, comparator>::node(val);
 			new_node_->parent_ = parent_node_;
 			return new_node_;
 			++size;
 		}
+		int flag = 0;
 		if (val < node_->node_value_) 
 			node_->left_child_  = insert_node(node_->left_child_, node_, val); 
 		else if (val > node_->node_value_) 
+		{
 			node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
+			flag = 1;
+		}
 		//this case shouldnt happen
-		rotate_up(node_);
-		return node_; 
+		//cout << endl << "NODE" << node_->node_value_;
+		if(flag)
+		{
+			//cout << node_->right_child_->node_value_;
+			return node_->right_child_;
+		}
+		return node_->left_child_;
 	}
 
 	void rotate_up(node* node_)
 	{
 
-		cout <<"ROTATING";
+		//cout <<"ROTATING: "<<node_->node_value_;
 		struct node* parent;
 		struct node* grandparent;
 #if 1
 		if(node_->parent_)
+		{
+			//cout << endl << "NODE HAS PARENT" << endl;
 			parent = node_->parent_;
+		}
 		else
 			return;
 
 		if(node_->parent_->parent_)
+		{
+			//cout << endl << "Node has grandparent"<< endl;
 			grandparent = node_->parent_->parent_;
-
+		}
+		else
+		{
+			grandparent = nullptr;
+		}
+		
 		if(node_->parent_->left_child_ == node_)
 		{
+			//cout << endl << "NODE HAS LEFT CHILD" << endl;
 			node* child = node_->right_child_;
 			node_->right_child_ = parent;
 			if(child)
@@ -117,10 +139,13 @@ private:
 
 		else
 		{
+			//cout << endl << "NODE HAS RIGHT CHILD" << endl;
 			node* child = node_->left_child_;
 			node_->left_child_ = parent;
+			//cout << "NEw child value"<<node_->left_child_->node_value_;
 			if(child)
 			{
+				//cout << "node has child";brea
 				parent->right_child_ = child;
 				child->parent_ = parent;
 			}
@@ -137,21 +162,51 @@ private:
 				grandparent->right_child_ = node_;
 		}
 		else
+		{
+			//cout << "no gp" << endl;
 			node_->parent_ = nullptr;
+			root = node_;
+		}
 #endif
 	//return 1;
 	}
 
-	/*void splay(node* node_) const
+	void splay(node* node_) 
 	{
+		//Alread root
+		while(node_ && node_->parent_)
+		{
+			//	//cout <<"INSIDE SPLAY";
+			struct node* parent = node_->parent_;
+			struct node* grandparent = parent->parent_;
 
-	}*/
+			//parent is root
+			if(grandparent == nullptr)
+			{
+				//cout << "ZIG";
+				rotate_up(node_);
+			//	break;
+			}
+			//If both are same side child
+			else if(parent->left_child_ == node_ && grandparent->left_child_ == parent || parent->right_child_ == node_ && grandparent->right_child_ == parent)
+			{
+				rotate_up(parent);
+				rotate_up(node_);
+			}
+
+			else
+			{
+				rotate_up(node_);
+				rotate_up(node_);
+			}
+		}
+	}
 	
 	node* clone_tree(node* clone_from, node* parent);
 	
 	void destroy_tree(node* parent);
 
-	node* find_node(const value& val, node* curr_node) const
+	node* find_node(const value& val, node* curr_node) 
 	{
 		if(!curr_node)
 			return curr_node;
@@ -188,7 +243,7 @@ bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value,
 
 //Implementation
 
-//Default constructor when given conparator
+//Default constructor when given comparator
 template<typename value, typename comparator>
 splay_tree<value, comparator>::splay_tree(comparator comp) : comp(comp) 
 {
@@ -321,33 +376,42 @@ template<typename value, typename comparator>
 pair<typename splay_tree<value, comparator>::Iterator, bool>
 splay_tree<value, comparator>::insert(const value& val)
 {
-	cout<< "INSERTING";
+	//cout<< "INSERTING" << val;
 	//first searching in the tree if the value exists
 	auto find_pair = find(val);
 	//if already exists returning the iterator and false
 	if(find_pair.second)
+	{
+		//cout << "Already exists";
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, !find_pair.second);	
-	node* new_node = new node(val);
+	}
 	//if empty make new node and assign appropriately and returns
 	if(empty())
 	{
+		//cout << "Empty" << val;
+			node* new_node = new node(val);
 			head = tail = root = new_node;
+			new_node->parent_ = nullptr;
 			++size;
 			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
-	insert_node(root, nullptr,  val);
+	//cout <<"Not empty "<< val;
+	node* new_node = insert_node(root, nullptr,  val);
+	splay(new_node);
 	find_pair = find(val);
-	cout << "CALLING ROTATE";
+	//cout << endl << "CALLING ROTATE";
+	//cout << "New root "<<root->node_value_ << endl;
 	return find_pair;
 }
 
 //Finds value from tree. Have to add splaying
 template<typename value, typename comparator>
 pair<typename splay_tree<value, comparator>::Iterator, bool> 
-splay_tree<value, comparator>::find(const value& val) const
+splay_tree<value, comparator>::find(const value& val) 
 {
 	// begin();
-	node* target_node = find_node(val, head);
+	//g++ << "FIND "<<root->node_value_;
+	node* target_node = find_node(val, root);
 	if(target_node)	
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(target_node), true);
 	else
@@ -358,7 +422,7 @@ splay_tree<value, comparator>::find(const value& val) const
 /*template<typename value, typename comparator>
 void splay_tree<value, comparator>::rotate_up(splay_tree<value, comparator>::node* node_)
 {
-	cout <<"ROTATING";
+	//cout <<"ROTATING";
 	node* parent, grandparent;
 	if(node_->parent_)
 		parent = node_->parent_;
@@ -445,7 +509,7 @@ public:
 				if(iter->parent_->parent_)
 					iter = iter->parent_;
 				/*else
-					cout << "Cannot increment further";*/
+					//cout << "Cannot increment further";*/
 			}
 			
 		}
@@ -477,7 +541,7 @@ public:
 				if(iter->parent_->parent_)
 					iter = iter->parent_;
 				/*else
-					cout << "Cannot decrement further";*/
+					//cout << "Cannot decrement further";*/
 			}
 			
 		}
