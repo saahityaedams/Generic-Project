@@ -60,11 +60,13 @@ private:
 			++size;
 		}
 		int flag = 0;
-		if (val < node_->node_value_) 
+		// if (val < node_->node_value_) 
+		if(comp(val, node_->node_value_))
 		{
 			node_->left_child_  = insert_node(node_->left_child_, node_, val); 
 		}
-		else if (val > node_->node_value_) 
+		// else if (val > node_->node_value_) 
+		else if (!comp(val, node_->node_value_))
 		{
 			node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
 			flag = 1;
@@ -196,40 +198,55 @@ private:
 			return  find_node(val, curr_node->left_child_);
 		//delete_node(head, 100);
 	}
-	node* delete_node(node* root, value val)
+	node* delete_node(node* root, node* parent_node_, value val)
 	{
-		cout << "Sup" << endl;
 		if(root == nullptr)return root;
 
 		if(root->node_value_ > val)
 		{
-			root->left_child_ = delete_node(root->left_child_, val); 
+			root->left_child_ = delete_node(root->left_child_, root, val); 
 			return root;
 		}
 		else if(root->node_value_ < val)
 		{
-			root->right_child_ = delete_node(root->right_child_, val); 
+			root->right_child_ = delete_node(root->right_child_, root, val); 
 			return root; 
 		}
 
 		if(!root->left_child_)
 		{
+			if(root->right_child_)
+				(root->right_child_)->parent_ = parent_node_;
 			return root->right_child_;
 		}
 		else if(!root->right_child_)
 		{
+			if(root->left_child_)
+				(root->left_child_)->parent_ = parent_node_;
 			return root->left_child_;
 		}
 		else
 		{
 			node* succ_parent = root->right_child_;
 			node* succ = root->right_child_;
+			if(succ->left_child_ == nullptr)
+			{
+				if(succ->right_child_)
+					(succ->right_child_)->parent_ = root;
+				root->node_value_ = succ->node_value_;
+				root->right_child_ = (succ->right_child_)->parent_;
+				return root;
+			}
 			while(succ->left_child_ != nullptr)
 			{
 				succ_parent = succ;
 				succ = succ->left_child_;
 			}
 			succ_parent->left_child_ = succ->right_child_;
+			if(succ->right_child_)
+			{
+				(succ->right_child_)->parent_ = succ_parent->left_child_;
+			}
 			root->node_value_ = succ->node_value_;
 			return root;
 		}
@@ -440,7 +457,7 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 splay_tree<value, comparator>::erase(const value& val)
 {
 		cout << "Went in alive" << endl;
-		root = delete_node(root, val);
+		root = delete_node(root, nullptr, val);
 		--size;
 		cout << "Got out alive" << endl;
 }
