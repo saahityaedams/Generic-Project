@@ -428,7 +428,7 @@ splay_tree<value, comparator>::find(const value& val)
 	// begin();
 	//g++ << "FIND "<<root->node_value_;
 	node* target_node = find_node(val, root);
-	//splay(target_node);
+	splay(target_node);
 	if(target_node == nullptr)
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(splay_tree<value, comparator>::Iterator(target_node), false);
 	else
