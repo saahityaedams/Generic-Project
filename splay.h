@@ -66,7 +66,7 @@ private:
 			node_->left_child_  = insert_node(node_->left_child_, node_, val); 
 		}
 		// else if (val > node_->node_value_) 
-		else if (!comp(val, node_->node_value_))
+		else if (comp(node_->node_value_, val))
 		{
 			node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
 			flag = 1;
@@ -186,9 +186,11 @@ private:
 	{
 		if(curr_node == nullptr)
 			return curr_node;
-		else if(curr_node->node_value_ == val)
+		// else if(curr_node->node_value_ == val)
+		else if(!comp(curr_node->node_value_ ,val) && !comp(val, curr_node->node_value_))
 			return  curr_node;
-		else if(curr_node->node_value_ < val)
+//		else if(curr_node->node_value_ < val)
+		else if(comp(curr_node->node_value_, val))
 		{
 			cout << curr_node->node_value_<< "\n";
 			return  find_node(val, curr_node->right_child_);
@@ -202,12 +204,14 @@ private:
 	{
 		if(root == nullptr)return root;
 
-		if(root->node_value_ > val)
+		// if(root->node_value_ > val)
+		if(comp(val, root->node_value_ ))
 		{
 			root->left_child_ = delete_node(root->left_child_, root, val); 
 			return root;
 		}
-		else if(root->node_value_ < val)
+		// else if(root->node_value_ < val)
+		else if(comp(root->node_value_, val))
 		{
 			root->right_child_ = delete_node(root->right_child_, root, val); 
 			return root; 

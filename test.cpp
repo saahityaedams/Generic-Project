@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-	splay_tree<int> st, cp;
+	splay_tree<int, greater<int>> st, cp;
 	st.insert(10);
 	st.insert(40);
 	st.insert(100);
