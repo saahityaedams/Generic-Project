@@ -61,17 +61,15 @@ private:
 		}
 		int flag = 0;
 		if (val < node_->node_value_) 
+		{
 			node_->left_child_  = insert_node(node_->left_child_, node_, val); 
+		}
 		else if (val > node_->node_value_) 
 		{
 			node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
 			flag = 1;
 		}
-		if(flag)
-		{
-			return node_->right_child_;
-		}
-		return node_->left_child_;
+		return node_;
 	}
 
 	void rotate_up(node* node_)
@@ -184,18 +182,23 @@ private:
 
 	node* find_node(const value& val, node* curr_node) 
 	{
-		if(!curr_node)
+		if(curr_node == nullptr)
 			return curr_node;
 		else if(curr_node->node_value_ == val)
 			return  curr_node;
 		else if(curr_node->node_value_ < val)
+		{
+			cout << curr_node->node_value_<< "\n";
 			return  find_node(val, curr_node->right_child_);
+		}
+			
 		else
 			return  find_node(val, curr_node->left_child_);
 		//delete_node(head, 100);
 	}
 	node* delete_node(node* root, value val)
 	{
+		cout << "Sup" << endl;
 		if(root == nullptr)return root;
 
 		if(root->node_value_ > val)
@@ -367,7 +370,10 @@ template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::begin() const
 {
-	return Iterator(head);
+	node* temp = head;
+	while(temp->left_child_ != nullptr)temp = temp->left_child_;
+	return Iterator(temp);
+	//return Iterator(head);
 }
 
 //Return Iterator end
@@ -375,7 +381,10 @@ template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::end() const
 {
-	return Iterator(tail);
+	node* temp = head;
+	while(temp->right_child_ != nullptr)temp = temp->right_child_;
+	return Iterator(temp);
+	// return Iterator(tail);
 }
 
 //Return if size of tree is null
@@ -391,8 +400,10 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 splay_tree<value, comparator>::insert(const value& val)
 {
 	auto find_pair = find(val);
+	cout << boolalpha;
+	cout << find_pair.second << endl;
 	if(find_pair.second)
-		return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, !find_pair.second);	
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, false);
 
 	if(empty())
 	{
@@ -402,7 +413,7 @@ splay_tree<value, comparator>::insert(const value& val)
 			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
 	node* new_node = insert_node(root, nullptr,  val);
-	splay(new_node);
+	//splay(new_node);
 	find_pair = find(val);
 	//cout << endl << "CALLING ROTATE";
 	//cout << "New root "<<root->node_value_ << endl;
@@ -417,11 +428,11 @@ splay_tree<value, comparator>::find(const value& val)
 	// begin();
 	//g++ << "FIND "<<root->node_value_;
 	node* target_node = find_node(val, root);
-	splay(target_node);
-	if(target_node)
-		return pair<typename splay_tree<value, comparator>::Iterator, bool>(splay_tree<value, comparator>::Iterator(target_node), true);
-	else
+	//splay(target_node);
+	if(target_node == nullptr)
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(splay_tree<value, comparator>::Iterator(target_node), false);
+	else
+		return pair<typename splay_tree<value, comparator>::Iterator, bool>(splay_tree<value, comparator>::Iterator(target_node), true);
 }
 
 template<typename value, typename comparator>
@@ -430,6 +441,7 @@ splay_tree<value, comparator>::erase(const value& val)
 {
 		cout << "Went in alive" << endl;
 		delete_node(root, val);
+		--size;
 		cout << "Got out alive" << endl;
 }
 //Shifts node to its parent
