@@ -204,7 +204,7 @@ private:
 		if(root->node_value_ > val)
 		{
 			root->left_child_ = delete_node(root->left_child_, val); 
-			return root; 
+			return root;
 		}
 		else if(root->node_value_ < val)
 		{
@@ -440,7 +440,7 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 splay_tree<value, comparator>::erase(const value& val)
 {
 		cout << "Went in alive" << endl;
-		delete_node(root, val);
+		root = delete_node(root, val);
 		--size;
 		cout << "Got out alive" << endl;
 }
