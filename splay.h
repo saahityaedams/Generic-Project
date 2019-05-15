@@ -59,8 +59,8 @@ public:
 	Iterator rend() const;
 
 	pair<Iterator, bool> insert(const value_type& val);
-	pair<Iterator, bool> erase(const value_type& val);
 	pair<Iterator, bool> find(const value_type& val) ;
+	void erase(const value_type& val);
 	
 	// Non member comparison operator functions
 	friend ostream& operator<<(ostream&, const splay_tree& st)
@@ -498,8 +498,7 @@ splay_tree<value_type, comparator>::find(const value_type& val)
 }
 
 template<typename value_type, typename comparator>
-pair<typename splay_tree<value_type, comparator>::Iterator, bool> 
-splay_tree<value_type, comparator>::erase(const value_type& val)
+void splay_tree<value_type, comparator>::erase(const value_type& val)
 {
 		root = delete_node(root, nullptr, val);
 		--size_;
