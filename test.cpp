@@ -16,7 +16,8 @@ int main() {
 	st.insert(100);
 	st.insert(30);
 	st.insert(20);
-
+	cout << "size of st is " << st.size() << endl;
+	bool p = st < cp;
 	//for(auto it = st.begin(); it!=st.end(); ++it)
 	//	cout << *it << " ";
 	auto f10 = st.find(10);
