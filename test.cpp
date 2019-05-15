@@ -73,18 +73,32 @@ struct MyDatePred
 };
 
 int main() {
-	splay_tree<int, greater<int>> st;
-	splay_tree<int, greater<int>> cp;
+	splay_tree<int, less<int>> st;
+	splay_tree<int, less<int>> cp;
 	st.insert(10);
 	st.insert(40);
 	st.insert(100);
 	st.insert(30);
 	st.insert(20);
+	st.disp();
 	cout << boolalpha;
-	cout << st.find(20).second << endl;
-	cout << st.find(20).second << endl;
-	cout << st.find(20).second << endl;
-	cout << st.find(20).second << endl;
+	//cout << st.find(20).second << endl;
+	cout << endl << endl;
+	st.find(20);
+	st.disp();
+	cout << endl << endl;
+	//cout << st.find(20).second << endl;
+	st.find(40);
+	st.disp();
+	cout << endl << endl;
+	//cout << st.find(20).second << endl;
+	st.erase(20);
+	st.disp();
+	cout << endl << endl;
+	//cout << st.find(20).second << endl;
+	st.find(100);
+	st.disp();
+	cout << endl << endl;
 
 	// cp.insert(10);
 	// cp.insert(40);
