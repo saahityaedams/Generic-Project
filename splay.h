@@ -29,6 +29,9 @@ public:
 
 	Iterator begin() const;
 	Iterator end() const;
+	Iterator rbegin() const;
+	Iterator rend() const;
+
 
 	pair<Iterator, bool> insert(const value& val);
 	pair<Iterator, bool> erase(const value& val);
@@ -410,6 +413,29 @@ typename splay_tree<value, comparator>::Iterator
 	// return Iterator(tail);
 }
 
+template<typename value, typename comparator>
+typename splay_tree<value, comparator>::Iterator
+	splay_tree<value, comparator>::rbegin() const
+{
+	//cout << "root is"<<root->node_value_<<endl;
+	node* temp = root;
+	while(temp->right_child_ != nullptr)temp = temp->right_child_;
+	return Iterator(temp);
+	//return Iterator(head);
+}
+
+//Return Iterator end
+template<typename value, typename comparator>
+typename splay_tree<value, comparator>::Iterator
+	splay_tree<value, comparator>::rend() const
+{
+	/*node* temp = root;
+	while(temp->right_child_ != nullptr)temp = temp->right_child_;
+	return Iterator(temp);*/
+	return Iterator(nullptr);
+	// return Iterator(tail);
+}
+
 //Return if size_ of tree is null
 template<typename value, typename comparator>
 bool splay_tree<value, comparator>::empty() const
@@ -607,7 +633,37 @@ public:
 	}
 	Iterator& operator--()	//pre decrement
 	{
-		//logic to move backward in binary tree
+		if(iter->left_child_)
+		{
+			//cout << "has right child"<< endl;
+			iter = iter->left_child_;
+			while(iter->right_child_)
+			{
+				//cout << "going left";
+				iter = iter->right_child_;
+			}
+		}
+		else
+		{
+			if(iter->parent_)
+			{
+				//cout << "has parent" << iter->parent_->node_value_ << endl;
+				while(iter->parent_)
+				{
+					if(iter->parent_->right_child_ == iter)
+					{
+						//cout << "is left child of" << iter->parent_->node_value_ << endl;
+						iter = iter->parent_;
+						return *this;
+					}
+					iter = iter->parent_;
+				}				
+			}	
+			iter = nullptr;
+					
+		}
+		return *this;
+		/*//logic to move backward in binary tree
 		if(iter->left_child_)
 		{
 			iter = iter->left_child_;
@@ -625,11 +681,11 @@ public:
 				if(iter->parent_->parent_)
 					iter = iter->parent_;
 				/*else
-					////cout << "Cannot decrement further";*/
+					////cout << "Cannot decrement further";*
 			}
 			
 		}
-		return *this;
+		return *this;*/
 	}
 	Iterator operator--(int)	//post decrement
 	{
@@ -642,6 +698,28 @@ private:
 	node* iter;
 };
 
+/*
+template <typename value, typename comparator>
+bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+{
+	if(lhs.size() != rhs.size())
+	{
+		return false;
+	}
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it == *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr &&  jt == nullptr);
+}
+
+template <typename value, typename comparator>
+bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+{
+	return !(lhs == rhs);
+}
 
 template <typename value, typename comparator>
 bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
@@ -668,28 +746,6 @@ bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value
 }
 
 template <typename value, typename comparator>
-bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-{
-	if(lhs.size() != rhs.size())
-	{
-		return false;
-	}
-	auto it = lhs.begin();
-	auto jt = rhs.begin();
-	while(it != nullptr && jt != nullptr && *it == *jt)
-	{
-		++it; ++jt;
-	}
-	return(it == nullptr &&  jt == nullptr);
-}
-
-template <typename value, typename comparator>
-bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-{
-	return !(lhs == rhs);
-}
-
-template <typename value, typename comparator>
 bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
 	auto it = lhs.begin();
@@ -712,5 +768,5 @@ bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value,
 	}
 	return(it == nullptr &&  jt == nullptr);
 }
-
+*/
 #endif

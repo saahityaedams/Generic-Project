@@ -20,6 +20,8 @@ int main() {
 	cout <<"DISPLAYING";
 	for(auto it = st.begin(); it!=st.end(); ++it)
 		cout << *it << " ";
+	for(auto it = st.rbegin(); it!=st.rend(); --it)
+		cout << *it << " ";
 		cout << "DISPLAY";// << *st.begin() << " "<<*st.end();
 	auto p = st.begin();
 	p++;
@@ -37,7 +39,7 @@ int main() {
 		cout <<"END";
 	cout << endl << endl;
 	cout << "size of st is " << st.size() << endl;
-	bool p = st < cp;
+//	bool p = st < cp;
 	//for(auto it = st.begin(); it!=st.end(); ++it)
 	//	cout << *it << " ";
 	auto f10 = st.find(10);
