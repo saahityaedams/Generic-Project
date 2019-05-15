@@ -494,7 +494,7 @@ splay_tree<value, comparator>::insert(const value& val)
 			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
 	node* new_node = insert_node(root, nullptr,  val);
-	//splay(new_node);
+	splay(new_node);
 	find_pair = find(val);
 	////cout << endl << "CALLING ROTATE";
 	////cout << "New root "<<root->node_value_ << endl;
@@ -509,7 +509,9 @@ splay_tree<value, comparator>::find(const value& val)
 	// begin();
 	//g++ << "FIND "<<root->node_value_;
 	node* target_node = find_node(val, root);
-	//splay(target_node);
+	splay(target_node);
+	if(root)
+		cout << "Hey"<< root->node_value_ << "HI\n";
 	if(target_node == nullptr)
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(splay_tree<value, comparator>::Iterator(target_node), false);
 	else
