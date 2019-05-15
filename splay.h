@@ -616,7 +616,7 @@ public:
 	value operator*()const
 	{
 		if(iter) return iter->node_value_;
-		return value();
+		return value(); //IMPORTANT : Value class needs default constructor
 	}
 	Iterator& operator++()	//pre increment
 	{
