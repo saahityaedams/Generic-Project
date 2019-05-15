@@ -39,6 +39,13 @@ public:
 	
 	bool empty() const;
 
+	friend ostream& operator<<(ostream&, const splay_tree& st)
+	{
+		for(auto it = st.begin(); it!=st.end(); ++it)
+			cout << *it << " ";
+		cout << endl;
+	}
+
 	friend bool operator==( splay_tree& lhs,  splay_tree& rhs)
 	{
 		if(lhs.size() != rhs.size())
@@ -710,29 +717,7 @@ public:
 					
 		}
 		return *this;
-		/*//logic to move backward in binary tree
-		if(iter->left_child_)
-		{
-			iter = iter->left_child_;
-			return *this;
-		}
-		if(iter->parent_)
-		{
-			if(iter->parent_->right_child_ == iter) //right child with no children
-			{
-				iter = iter->parent_;
-				return *this;
-			}
-			else
-			{
-				if(iter->parent_->parent_)
-					iter = iter->parent_;
-				/*else
-					////cout << "Cannot decrement further";*
-			}
-			
-		}
-		return *this;*/
+		
 	}
 	Iterator operator--(int)	//post decrement
 	{
@@ -744,75 +729,5 @@ public:
 private:
 	node* iter;
 };
-
-// template<typename value, typename comparator>
-// bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	if(lhs.size() != rhs.size())
-// 	{
-// 		return false;
-// 	}
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != lhs.end() && jt != rhs.end() && *it == *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == lhs.end() &&  jt == rhs.end());
-// }
-
-// template <typename value, typename comparator>
-// bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	return !(lhs == rhs);
-// }
-
-// template <typename value, typename comparator>
-// bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != nullptr && jt != nullptr && *it < *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == nullptr || jt == nullptr);
-// }
-
-// template <typename value, typename comparator>
-// bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != nullptr && jt != nullptr && *it <= *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == nullptr || jt == nullptr);
-// }
-
-// template <typename value, typename comparator>
-// bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != nullptr && jt != nullptr && *it >= *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == nullptr &&  jt == nullptr);
-// }
-
-// template <typename value, typename comparator>
-// bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != nullptr && jt != nullptr && *it > *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == nullptr &&  jt == nullptr);
-// }
 
 #endif

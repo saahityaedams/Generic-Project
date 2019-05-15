@@ -25,13 +25,13 @@ int main() {
 	//cp.insert(20);
 		bool q = st == cp;
 cout << "Q: " << q <<endl;
-
-	cout <<"DISPLAYING";
+cout << st;
+	/*cout <<"DISPLAYING";
 	for(auto it = st.begin(); it!=st.end(); ++it)
 		cout << *it << " ";
 	for(auto it = st.rbegin(); it!=st.rend(); --it)
 		cout << *it << " ";
-		cout << "DISPLAY";// << *st.begin() << " "<<*st.end();
+		cout << "DISPLAY";// << *st.begin() << " "<<*st.end();*/
 	auto p = st.begin();
 	p++;
 	cout << *p;
