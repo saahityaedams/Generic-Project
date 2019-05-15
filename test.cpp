@@ -92,7 +92,7 @@ int main() {
 	st.disp();
 	cout << endl << endl;
 	//cout << st.find(20).second << endl;
-	st.erasegit (20);
+	st.erase(20);
 	st.disp();
 	cout << endl << endl;
 	//cout << st.find(20).second << endl;
