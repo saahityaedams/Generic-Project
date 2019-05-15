@@ -1,5 +1,6 @@
 #ifndef SPLAY_TREE
 #define SPLAY_TREE
+#define SPACE_COUNT 6
 #include <iostream>
 #include <utility>
 #include <functional>
@@ -27,7 +28,12 @@ public:
 	splay_tree& operator=(splay_tree&& rhs);
 
 	size_t size() const {	return size_;	}
-	bool empty() const {	return (size_ == 0);	}
+	bool empty() const 	{	return (size_ == 0);	}
+
+	void disp()
+	{
+		display_tree(root, 0);
+	}
 
 	class Iterator;
 
@@ -132,6 +138,18 @@ private:
 	node* clone_tree(node* clone_from, node* parent);
 	void destroy_tree(node* parent);
 
+	void display_tree(node* root_node, int space)
+	{
+		if(root_node == NULL)
+			return;
+		space += SPACE_COUNT;
+		display_tree(root_node->right_child_, space);
+		cout << endl;
+		for(int i = SPACE_COUNT; i < space; ++i)
+			cout << " ";
+		cout << root_node->node_value_;
+		display_tree(root_node->left_child_, space);
+	}
 
 	node* insert_node(node* node_, node* parent_node_, const value& val)
 	{
