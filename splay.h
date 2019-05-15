@@ -51,6 +51,13 @@ public:
 	
 
 	// Non member comparison operator functions
+	friend ostream& operator<<(ostream&, const splay_tree& st)
+	{
+		for(auto it = st.begin(); it!=st.end(); ++it)
+			cout << *it << " ";
+		cout << endl;
+	}
+
 	friend bool operator==( splay_tree& lhs,  splay_tree& rhs)
 	{
 		if(lhs.size() != rhs.size())
@@ -688,29 +695,7 @@ public:
 					
 		}
 		return *this;
-		/*//logic to move backward in binary tree
-		if(iter->left_child_)
-		{
-			iter = iter->left_child_;
-			return *this;
-		}
-		if(iter->parent_)
-		{
-			if(iter->parent_->right_child_ == iter) //right child with no children
-			{
-				iter = iter->parent_;
-				return *this;
-			}
-			else
-			{
-				if(iter->parent_->parent_)
-					iter = iter->parent_;
-				/*else
-					////cout << "Cannot decrement further";*
-			}
-			
-		}
-		return *this;*/
+		
 	}
 	Iterator operator--(int)	//post decrement
 	{
