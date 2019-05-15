@@ -1,0 +1,40 @@
+sequential inserts for 0-10000
+
+5553153
+1182557
+
+5881858
+1044527
+-----------------------------------------
+sequential find for 0-1000 for container with 0-1000
+
+3185839
+1359146
+
+3187793
+1254173
+----------------------------------------
+repeated find for a random number for 10000 times in a container with 0-10000
+
+3074652
+530767
+
+5263168
+637590
+--------------------------------------------
+find for a different random number for 10000 times in a container with 10000 random elements
+
+3650804
+4592814
+
+3620328
+4502424
+----------------------------------------------
+find for a different random number for 1000000 times in a container with 1000000 random elements
+
+807150656
+1194214787
+
+856725207
+1198632367
+-----------------------------------------------
