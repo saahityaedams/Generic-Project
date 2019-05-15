@@ -19,7 +19,10 @@ public:
 	splay_tree& operator=(const splay_tree& rhs);
 	splay_tree& operator=(splay_tree&& rhs);
 
-	
+	size_t size()
+	{
+		return size_;
+	}
 
 	//Iterator Class
 	class Iterator;
@@ -48,7 +51,7 @@ private:
 	node* root;
 	
 	comparator comp;
-	size_t size;
+	size_t size_;
 	//REVIEW
 	node* insert_node(node* node_, node* parent_node_, const value& val)
 	{
@@ -56,8 +59,8 @@ private:
 		{
 			node *new_node_ = new splay_tree<value, comparator>::node(val);
 			new_node_->parent_ = parent_node_;
+			++size_;
 			return new_node_;
-			++size;
 		}
 		int flag = 0;
 		// if (val < node_->node_value_) 
@@ -256,8 +259,6 @@ private:
 		}
 	} 
 };
-
-//Comparison Operators - Why are we doing comparison of containers?
 /*
 template <typename value, typename comparator>
 bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
@@ -277,7 +278,6 @@ bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value
 template <typename value, typename comparator>
 bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
 */
-
 //Implementation
 
 //Default constructor when given comparator
@@ -285,14 +285,14 @@ template<typename value, typename comparator>
 splay_tree<value, comparator>::splay_tree(comparator comp) : comp(comp) 
 {
 	root = head = tail = nullptr;
-	size = 0;
+	size_ = 0;
 }
 
 //Copy Constructor
 template<typename value, typename comparator>
 splay_tree<value, comparator>::splay_tree(const splay_tree& rhs) 
 {
-	size = rhs.size;
+	size_ = rhs.size_;
 	comp = rhs.comp;
 
 	root = clone_tree(rhs.root, nullptr);
@@ -311,7 +311,7 @@ splay_tree<value, comparator>&
 {
 	destroy_tree(root);
 	
-	size = rhs.size;
+	size_ = rhs.size_;
 	comp = rhs.comp;
 
 	root = clone_tree(rhs.root, nullptr);
@@ -328,7 +328,7 @@ splay_tree<value, comparator>&
 //REVIEW Why are we not destroying the original tree?
 template<typename value, typename comparator>
 splay_tree<value, comparator>::splay_tree(splay_tree&& rhs)
-: size(rhs.size), comp(rhs.comp), root(rhs.root), tail(rhs.tail), head(rhs.head)
+: size_(rhs.size_), comp(rhs.comp), root(rhs.root), tail(rhs.tail), head(rhs.head)
 {
 	rhs.root = rhs.tail = rhs.head = nullptr;
 }
@@ -347,7 +347,7 @@ splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
 		head = rhs.head;
 		tail = rhs.tail;
 		rhs.root = rhs.tail = rhs.head = nullptr;
-		size = rhs.size;
+		size_ = rhs.size_;
 		comp = rhs.comp;
 	}
 	return *this;
@@ -410,11 +410,11 @@ typename splay_tree<value, comparator>::Iterator
 	// return Iterator(tail);
 }
 
-//Return if size of tree is null
+//Return if size_ of tree is null
 template<typename value, typename comparator>
 bool splay_tree<value, comparator>::empty() const
 {
-	return (size == 0);
+	return (size_ == 0);
 }
 
 // Insert value into tree
@@ -432,7 +432,7 @@ splay_tree<value, comparator>::insert(const value& val)
 	{
 			node* new_node = new node(val);
 			head = tail = root = new_node;
-			++size;
+			++size_;
 			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
 	node* new_node = insert_node(root, nullptr,  val);
@@ -464,8 +464,8 @@ splay_tree<value, comparator>::erase(const value& val)
 {
 		//cout << "Went in alive" << endl;
 		root = delete_node(root, nullptr, val);
-		--size;
-		//cout << "Got out alive" << endl;
+		--size_;
+		cout << "Got out alive" << endl;
 }
 //Shifts node to its parent
 /*template<typename value, typename comparator>
@@ -641,5 +641,76 @@ public:
 private:
 	node* iter;
 };
+
+
+template <typename value, typename comparator>
+bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+{
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it < *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr || jt == nullptr);
+}
+
+template <typename value, typename comparator>
+bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+{
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it <= *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr || jt == nullptr);
+}
+
+template <typename value, typename comparator>
+bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+{
+	if(lhs.size() != rhs.size())
+	{
+		return false;
+	}
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it == *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr &&  jt == nullptr);
+}
+
+template <typename value, typename comparator>
+bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+{
+	return !(lhs == rhs);
+}
+
+template <typename value, typename comparator>
+bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+{
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it >= *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr &&  jt == nullptr);
+}
+
+template <typename value, typename comparator>
+bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+{
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it > *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr &&  jt == nullptr);
+}
 
 #endif

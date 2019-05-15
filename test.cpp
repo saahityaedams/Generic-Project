@@ -36,6 +36,10 @@ int main() {
 	if(p == st.end())
 		cout <<"END";
 	cout << endl << endl;
+	cout << "size of st is " << st.size() << endl;
+	bool p = st < cp;
+	//for(auto it = st.begin(); it!=st.end(); ++it)
+	//	cout << *it << " ";
 	auto f10 = st.find(10);
 	auto f20 = st.find(20);
 	auto f30 = st.find(40);
