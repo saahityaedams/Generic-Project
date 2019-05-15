@@ -44,7 +44,7 @@ public:
 	friend ostream& operator<<(ostream&, const splay_tree& st)
 	{
 		for(auto it = st.begin(); it!=st.end(); ++it)
-			cout << *it << " ";
+			cout << *it << "\t";
 		cout << endl;
 	}
 
@@ -76,7 +76,7 @@ public:
 		{
 			++it; ++jt;
 		}
-		return(it == lhs.end() || jt == rhs.end());
+ 		return(it == lhs.end() || jt == rhs.end());
 	}
 
 	friend bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
@@ -203,7 +203,7 @@ private:
 				if(succ->right_child_)
 					(succ->right_child_)->parent_ = root;
 				root->node_value_ = succ->node_value_;
-				root->right_child_ = succ->right_child;
+				root->right_child_ = succ->right_child_;
 				delete succ;
 				return root;
 			}
