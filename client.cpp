@@ -69,9 +69,9 @@ int main() {
 
 //insert and find and erase methods
 //move constructor and normal constructor
-#if 0
-	splay_tree<int, greater<int>> st1;
-    st1.insert(10);  st1.insert(40);  st1.insert(50); st1.insert(30);  st1.insert(20);  st1.insert(100);
+#if 1
+	splay_tree<int, greater<int>> st1{10 ,20, 30, 40, 50, 100};
+    // st1.insert(10);  st1.insert(40);  st1.insert(50); st1.insert(30);  st1.insert(20);  st1.insert(100);
 	splay_tree<int, greater<int>> st2(st1);
 
     st1.erase(100);
