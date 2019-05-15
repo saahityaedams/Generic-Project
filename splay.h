@@ -10,21 +10,33 @@ template<typename value, typename comparator = 	less<value> >
 class splay_tree
 {
 public:
-	splay_tree(comparator comp = comparator());
+	// splay_tree(comparator comp = comparator());
+	splay_tree(comparator comp = comparator()) : comp(comp) 
+	{
+		root = head = tail = nullptr;
+		size_ = 0;
+	}
 	splay_tree(const splay_tree& rhs);
 	splay_tree(splay_tree&& rhs);
 	
-	~splay_tree();
+	~splay_tree()
+	{
+		destroy_tree(root);
+	}
 
 	splay_tree& operator=(const splay_tree& rhs);
 	splay_tree& operator=(splay_tree&& rhs);
 
-	size_t size()
+	size_t size() const
 	{
 		return size_;
 	}
 
-	//Iterator Class
+	bool empty() const
+	{
+		return (size_ == 0);
+	}
+
 	class Iterator;
 
 	Iterator begin() const;
@@ -37,8 +49,8 @@ public:
 	pair<Iterator, bool> erase(const value& val);
 	pair<Iterator, bool> find(const value& val) ;
 	
-	bool empty() const;
 
+	// Non member comparison operator functions
 	friend bool operator==( splay_tree& lhs,  splay_tree& rhs)
 	{
 		if(lhs.size() != rhs.size())
@@ -119,7 +131,11 @@ private:
 	
 	comparator comp;
 	size_t size_;
-	//REVIEW
+	
+	node* clone_tree(node* clone_from, node* parent);
+	void destroy_tree(node* parent);
+
+
 	node* insert_node(node* node_, node* parent_node_, const value& val)
 	{
 		if (node_ == nullptr)
@@ -130,12 +146,10 @@ private:
 			return new_node_;
 		}
 		int flag = 0;
-		// if (val < node_->node_value_) 
 		if(comp(val, node_->node_value_))
 		{
 			node_->left_child_  = insert_node(node_->left_child_, node_, val); 
 		}
-		// else if (val > node_->node_value_) 
 		else if (comp(node_->node_value_, val))
 		{
 			node_->right_child_ = insert_node(node_->right_child_, node_ , val);    
@@ -143,6 +157,78 @@ private:
 		}
 		return node_;
 	}
+
+	node* find_node(const value& val, node* curr_node) 
+	{
+		if(curr_node == nullptr)
+			return curr_node;
+		else if(!comp(curr_node->node_value_ ,val) && !comp(val, curr_node->node_value_))
+			return  curr_node;
+		else if(comp(curr_node->node_value_, val))
+		{
+			return  find_node(val, curr_node->right_child_);
+		}
+			
+		else
+			return  find_node(val, curr_node->left_child_);
+	}
+
+	node* delete_node(node* root, node* parent_node_, value val)
+	{
+		if(root == nullptr)return root;
+
+		// if(root->node_value_ > val)
+		if(comp(val, root->node_value_ ))
+		{
+			root->left_child_ = delete_node(root->left_child_, root, val); 
+			return root;
+		}
+		// else if(root->node_value_ < val)
+		else if(comp(root->node_value_, val))
+		{
+			root->right_child_ = delete_node(root->right_child_, root, val); 
+			return root; 
+		}
+
+		if(!root->left_child_)
+		{
+			if(root->right_child_)
+				(root->right_child_)->parent_ = parent_node_;
+			return root->right_child_;
+		}
+		else if(!root->right_child_)
+		{
+			if(root->left_child_)
+				(root->left_child_)->parent_ = parent_node_;
+			return root->left_child_;
+		}
+		else
+		{
+			node* succ_parent = root->right_child_;
+			node* succ = root->right_child_;
+			if(succ->left_child_ == nullptr)
+			{
+				if(succ->right_child_)
+					(succ->right_child_)->parent_ = root;
+				root->node_value_ = succ->node_value_;
+				root->right_child_ = (succ->right_child_)->parent_;
+				return root;
+			}
+			while(succ->left_child_ != nullptr)
+			{
+				succ_parent = succ;
+				succ = succ->left_child_;
+			}
+			succ_parent->left_child_ = succ->right_child_;
+			if(succ->right_child_)
+			{
+				(succ->right_child_)->parent_ = succ_parent->left_child_;
+			}
+			root->node_value_ = succ->node_value_;
+			return root;
+		}
+	} 
+
 
 	void rotate_up(node* node_)
 	{
@@ -247,96 +333,10 @@ private:
 			}
 		}
 	}
-	
-	node* clone_tree(node* clone_from, node* parent);
-	
-	void destroy_tree(node* parent);
-
-	node* find_node(const value& val, node* curr_node) 
-	{
-		if(curr_node == nullptr)
-			return curr_node;
-		// else if(curr_node->node_value_ == val)
-		else if(!comp(curr_node->node_value_ ,val) && !comp(val, curr_node->node_value_))
-			return  curr_node;
-//		else if(curr_node->node_value_ < val)
-		else if(comp(curr_node->node_value_, val))
-		{
-			//cout << curr_node->node_value_<< "\n";
-			return  find_node(val, curr_node->right_child_);
-		}
-			
-		else
-			return  find_node(val, curr_node->left_child_);
-		//delete_node(head, 100);
-	}
-	node* delete_node(node* root, node* parent_node_, value val)
-	{
-		if(root == nullptr)return root;
-
-		// if(root->node_value_ > val)
-		if(comp(val, root->node_value_ ))
-		{
-			root->left_child_ = delete_node(root->left_child_, root, val); 
-			return root;
-		}
-		// else if(root->node_value_ < val)
-		else if(comp(root->node_value_, val))
-		{
-			root->right_child_ = delete_node(root->right_child_, root, val); 
-			return root; 
-		}
-
-		if(!root->left_child_)
-		{
-			if(root->right_child_)
-				(root->right_child_)->parent_ = parent_node_;
-			return root->right_child_;
-		}
-		else if(!root->right_child_)
-		{
-			if(root->left_child_)
-				(root->left_child_)->parent_ = parent_node_;
-			return root->left_child_;
-		}
-		else
-		{
-			node* succ_parent = root->right_child_;
-			node* succ = root->right_child_;
-			if(succ->left_child_ == nullptr)
-			{
-				if(succ->right_child_)
-					(succ->right_child_)->parent_ = root;
-				root->node_value_ = succ->node_value_;
-				root->right_child_ = (succ->right_child_)->parent_;
-				return root;
-			}
-			while(succ->left_child_ != nullptr)
-			{
-				succ_parent = succ;
-				succ = succ->left_child_;
-			}
-			succ_parent->left_child_ = succ->right_child_;
-			if(succ->right_child_)
-			{
-				(succ->right_child_)->parent_ = succ_parent->left_child_;
-			}
-			root->node_value_ = succ->node_value_;
-			return root;
-		}
-	} 
 };
 
 
-//Implementation
-
 //Default constructor when given comparator
-template<typename value, typename comparator>
-splay_tree<value, comparator>::splay_tree(comparator comp) : comp(comp) 
-{
-	root = head = tail = nullptr;
-	size_ = 0;
-}
 
 //Copy Constructor
 template<typename value, typename comparator>
@@ -391,8 +391,6 @@ splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
 	if(this != &rhs)
 	{
 		destroy_tree(root);
-//		delete head;
-//		delete tail;
 		root = rhs.root;
 		head = rhs.head;
 		tail = rhs.tail;
@@ -403,12 +401,6 @@ splay_tree<value, comparator>::operator=(splay_tree<value, comparator>&& rhs)
 	return *this;
 }
 
-//Destructor
-template<typename value, typename comparator>
-splay_tree<value, comparator>::~splay_tree()
-{
-	// destroy_tree(root);
-}
 
 //Clone tree
 template<typename value, typename comparator>
@@ -441,11 +433,9 @@ template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::begin() const
 {
-	//cout << "root is"<<root->node_value_<<endl;
 	node* temp = root;
 	while(temp->left_child_ != nullptr)temp = temp->left_child_;
 	return Iterator(temp);
-	//return Iterator(head);
 }
 
 //Return Iterator end
@@ -453,22 +443,16 @@ template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::end() const
 {
-	/*node* temp = root;
-	while(temp->right_child_ != nullptr)temp = temp->right_child_;
-	return Iterator(temp);*/
 	return Iterator(nullptr);
-	// return Iterator(tail);
 }
 
 template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::rbegin() const
 {
-	//cout << "root is"<<root->node_value_<<endl;
 	node* temp = root;
 	while(temp->right_child_ != nullptr)temp = temp->right_child_;
 	return Iterator(temp);
-	//return Iterator(head);
 }
 
 //Return Iterator end
@@ -483,12 +467,6 @@ typename splay_tree<value, comparator>::Iterator
 	// return Iterator(tail);
 }
 
-//Return if size_ of tree is null
-template<typename value, typename comparator>
-bool splay_tree<value, comparator>::empty() const
-{
-	return (size_ == 0);
-}
 
 // Insert value into tree
 template<typename value, typename comparator>
@@ -744,75 +722,5 @@ public:
 private:
 	node* iter;
 };
-
-// template<typename value, typename comparator>
-// bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	if(lhs.size() != rhs.size())
-// 	{
-// 		return false;
-// 	}
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != lhs.end() && jt != rhs.end() && *it == *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == lhs.end() &&  jt == rhs.end());
-// }
-
-// template <typename value, typename comparator>
-// bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	return !(lhs == rhs);
-// }
-
-// template <typename value, typename comparator>
-// bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != nullptr && jt != nullptr && *it < *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == nullptr || jt == nullptr);
-// }
-
-// template <typename value, typename comparator>
-// bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != nullptr && jt != nullptr && *it <= *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == nullptr || jt == nullptr);
-// }
-
-// template <typename value, typename comparator>
-// bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != nullptr && jt != nullptr && *it >= *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == nullptr &&  jt == nullptr);
-// }
-
-// template <typename value, typename comparator>
-// bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-// {
-// 	auto it = lhs.begin();
-// 	auto jt = rhs.begin();
-// 	while(it != nullptr && jt != nullptr && *it > *jt)
-// 	{
-// 		++it; ++jt;
-// 	}
-// 	return(it == nullptr &&  jt == nullptr);
-// }
 
 #endif
