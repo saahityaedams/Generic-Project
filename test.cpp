@@ -17,16 +17,30 @@ int main() {
 	st.insert(30);
 	st.insert(20);
 
-	//for(auto it = st.begin(); it!=st.end(); ++it)
-	//	cout << *it << " ";
+	cout <<"DISPLAYING";
+	for(auto it = st.begin(); it!=st.end(); ++it)
+		cout << *it << " ";
+		cout << "DISPLAY";// << *st.begin() << " "<<*st.end();
+	auto p = st.begin();
+	p++;
+	cout << *p;
+	p++;
+	cout << *p;
+	p++;
+	cout << *p;
+	p++;
+	cout << *p;
+	p++;
+	cout << *p;
+
+	if(p == st.end())
+		cout <<"END";
+	cout << endl << endl;
 	auto f10 = st.find(10);
 	auto f20 = st.find(20);
 	auto f30 = st.find(40);
 		auto f40 = st.find(30);
 	auto f50 = st.find(100);
-
-	cout << "DISPLAY" << *st.begin() << " "<<*st.end();
-
 	cout <<"Hallelujah "<<  *(f10.first) << endl;
 	cout <<"Hallelujah "<<  *(f20.first) << endl;
 	cout <<"Hallelujah "<<  *(f30.first) << endl;

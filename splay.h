@@ -77,13 +77,13 @@ private:
 	void rotate_up(node* node_)
 	{
 
-		//cout <<"ROTATING: "<<node_->node_value_;
+		////cout <<"ROTATING: "<<node_->node_value_;
 		struct node* parent;
 		struct node* grandparent;
 #if 1
 		if(node_->parent_)
 		{
-			//cout << endl << "NODE HAS PARENT" << endl;
+			////cout << endl << "NODE HAS PARENT" << endl;
 			parent = node_->parent_;
 		}
 		else
@@ -91,7 +91,7 @@ private:
 
 		if(node_->parent_->parent_)
 		{
-			//cout << endl << "Node has grandparent"<< endl;
+			////cout << endl << "Node has grandparent"<< endl;
 			grandparent = node_->parent_->parent_;
 		}
 		else
@@ -101,7 +101,7 @@ private:
 		
 		if(node_->parent_->left_child_ == node_)
 		{
-			//cout << endl << "NODE HAS LEFT CHILD" << endl;
+			////cout << endl << "NODE HAS LEFT CHILD" << endl;
 			node* child = node_->right_child_;
 			node_->right_child_ = parent;
 			if(child)
@@ -115,13 +115,13 @@ private:
 
 		else
 		{
-			//cout << endl << "NODE HAS RIGHT CHILD" << endl;
+			////cout << endl << "NODE HAS RIGHT CHILD" << endl;
 			node* child = node_->left_child_;
 			node_->left_child_ = parent;
-			//cout << "NEw child value"<<node_->left_child_->node_value_;
+			////cout << "NEw child value"<<node_->left_child_->node_value_;
 			if(child)
 			{
-				//cout << "node has child";brea
+				////cout << "node has child";brea
 				parent->right_child_ = child;
 				child->parent_ = parent;
 			}
@@ -139,7 +139,7 @@ private:
 		}
 		else
 		{
-			//cout << "no gp" << endl;
+			////cout << "no gp" << endl;
 			node_->parent_ = nullptr;
 			root = node_;
 		}
@@ -152,14 +152,14 @@ private:
 		//Alread root
 		while(node_ && node_->parent_)
 		{
-			//	//cout <<"INSIDE SPLAY";
+			//	////cout <<"INSIDE SPLAY";
 			struct node* parent = node_->parent_;
 			struct node* grandparent = parent->parent_;
 
 			//parent is root
 			if(grandparent == nullptr)
 			{
-				//cout << "ZIG";
+				////cout << "ZIG";
 				rotate_up(node_);
 			//	break;
 			}
@@ -192,7 +192,7 @@ private:
 //		else if(curr_node->node_value_ < val)
 		else if(comp(curr_node->node_value_, val))
 		{
-			cout << curr_node->node_value_<< "\n";
+			//cout << curr_node->node_value_<< "\n";
 			return  find_node(val, curr_node->right_child_);
 		}
 			
@@ -391,6 +391,7 @@ template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::begin() const
 {
+	//cout << "root is"<<root->node_value_<<endl;
 	node* temp = root;
 	while(temp->left_child_ != nullptr)temp = temp->left_child_;
 	return Iterator(temp);
@@ -402,9 +403,10 @@ template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::end() const
 {
-	node* temp = root;
+	/*node* temp = root;
 	while(temp->right_child_ != nullptr)temp = temp->right_child_;
-	return Iterator(temp);
+	return Iterator(temp);*/
+	return Iterator(nullptr);
 	// return Iterator(tail);
 }
 
@@ -421,8 +423,8 @@ pair<typename splay_tree<value, comparator>::Iterator, bool>
 splay_tree<value, comparator>::insert(const value& val)
 {
 	auto find_pair = find(val);
-	cout << boolalpha;
-	cout << find_pair.second << endl;
+	//cout << boolalpha;
+	//cout << find_pair.second << endl;
 	if(find_pair.second)
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(find_pair.first, false);
 
@@ -434,10 +436,10 @@ splay_tree<value, comparator>::insert(const value& val)
 			return pair<typename splay_tree<value, comparator>::Iterator, bool>(typename splay_tree<value, comparator>::Iterator(head), true);
 	}
 	node* new_node = insert_node(root, nullptr,  val);
-	splay(new_node);
+	//splay(new_node);
 	find_pair = find(val);
-	//cout << endl << "CALLING ROTATE";
-	//cout << "New root "<<root->node_value_ << endl;
+	////cout << endl << "CALLING ROTATE";
+	////cout << "New root "<<root->node_value_ << endl;
 	return find_pair;
 }
 
@@ -449,7 +451,7 @@ splay_tree<value, comparator>::find(const value& val)
 	// begin();
 	//g++ << "FIND "<<root->node_value_;
 	node* target_node = find_node(val, root);
-	splay(target_node);
+	//splay(target_node);
 	if(target_node == nullptr)
 		return pair<typename splay_tree<value, comparator>::Iterator, bool>(splay_tree<value, comparator>::Iterator(target_node), false);
 	else
@@ -460,16 +462,16 @@ template<typename value, typename comparator>
 pair<typename splay_tree<value, comparator>::Iterator, bool> 
 splay_tree<value, comparator>::erase(const value& val)
 {
-		cout << "Went in alive" << endl;
+		//cout << "Went in alive" << endl;
 		root = delete_node(root, nullptr, val);
 		--size;
-		cout << "Got out alive" << endl;
+		//cout << "Got out alive" << endl;
 }
 //Shifts node to its parent
 /*template<typename value, typename comparator>
 void splay_tree<value, comparator>::rotate_up(splay_tree<value, comparator>::node* node_)
 {
-	//cout <<"ROTATING";
+	////cout <<"ROTATING";
 	node* parent, grandparent;
 	if(node_->parent_)
 		parent = node_->parent_;
@@ -538,9 +540,43 @@ public:
 	}
 	Iterator& operator++()	//pre increment
 	{
-		//logic to move forward in binary tree
+		//cout << iter->node_value_;
 		if(iter->right_child_)
 		{
+			//cout << "has right child"<< endl;
+			iter = iter->right_child_;
+			while(iter->left_child_)
+			{
+				//cout << "going left";
+				iter = iter->left_child_;
+			}
+		}
+		else
+		{
+			if(iter->parent_)
+			{
+				//cout << "has parent" << iter->parent_->node_value_ << endl;
+				while(iter->parent_)
+				{
+					if(iter->parent_->left_child_ == iter)
+					{
+						//cout << "is left child of" << iter->parent_->node_value_ << endl;
+						iter = iter->parent_;
+						return *this;
+					}
+					iter = iter->parent_;
+				}				
+			}	
+			iter = nullptr;
+					
+		}
+		return *this;
+		////cout <<"++";
+		////cout << iter->node_value_<<endl;
+		//logic to move forward in binary tree
+		/*if(iter->right_child_)
+		{
+			//cout << "has right child";
 			iter = iter->right_child_;
 			return *this;
 		}
@@ -548,19 +584,20 @@ public:
 		{
 			if(iter->parent_->left_child_ == iter) //left_child with no children
 			{
+				//cout << "is left child";
 				iter = iter->parent_;
 				return *this;
 			}
 			else
 			{
+				//cout << "is right child";
 				if(iter->parent_->parent_)
-					iter = iter->parent_;
-				/*else
-					//cout << "Cannot increment further";*/
-			}
-			
+					iter = iter->parent_->parent_;
+				else
+					//cout << "Cannot increment further";
+			}	
 		}
-		return *this;
+		return *this;*/
 	}
 	Iterator operator++(int)	//post increment
 	{
@@ -588,7 +625,7 @@ public:
 				if(iter->parent_->parent_)
 					iter = iter->parent_;
 				/*else
-					//cout << "Cannot decrement further";*/
+					////cout << "Cannot decrement further";*/
 			}
 			
 		}
