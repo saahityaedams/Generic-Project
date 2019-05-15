@@ -10,12 +10,21 @@ using namespace std;
 };*/
 
 int main() {
-	splay_tree<int, greater<int>> st, cp;
+	splay_tree<int, greater<int>> st;
+	splay_tree<int, greater<int>> cp;
 	st.insert(10);
 	st.insert(40);
 	st.insert(100);
 	st.insert(30);
 	st.insert(20);
+
+	cp.insert(10);
+	cp.insert(40);
+	cp.insert(100);
+	cp.insert(30);
+	//cp.insert(20);
+		bool q = st == cp;
+cout << "Q: " << q <<endl;
 
 	cout <<"DISPLAYING";
 	for(auto it = st.begin(); it!=st.end(); ++it)
@@ -39,7 +48,6 @@ int main() {
 		cout <<"END";
 	cout << endl << endl;
 	cout << "size of st is " << st.size() << endl;
-//	bool p = st < cp;
 	//for(auto it = st.begin(); it!=st.end(); ++it)
 	//	cout << *it << " ";
 	auto f10 = st.find(10);

@@ -39,6 +39,21 @@ public:
 	
 	bool empty() const;
 
+	friend bool operator==( splay_tree& lhs,  splay_tree& rhs)
+	{
+		if(lhs.size() != rhs.size())
+		{
+			return false;
+		}
+		auto it = lhs.begin();
+		auto jt = rhs.begin();
+		while(it != lhs.end() && jt != rhs.end() && *it == *jt)
+		{
+			++it; ++jt;
+		}
+		return(it == lhs.end() &&  jt == rhs.end());
+	}
+
 private:
 	struct node
 	{
@@ -699,8 +714,7 @@ private:
 };
 
 /*
-template <typename value, typename comparator>
-bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)<>
 {
 	if(lhs.size() != rhs.size())
 	{
@@ -708,13 +722,13 @@ bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value
 	}
 	auto it = lhs.begin();
 	auto jt = rhs.begin();
-	while(it != nullptr && jt != nullptr && *it == *jt)
+	while(it != lhs.end() && jt != rhs.end() && *it == *jt)
 	{
 		++it; ++jt;
 	}
-	return(it == nullptr &&  jt == nullptr);
+	return(it == lhs.end() &&  jt == rhs.end());
 }
-
+/*
 template <typename value, typename comparator>
 bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
