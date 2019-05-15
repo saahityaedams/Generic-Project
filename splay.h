@@ -609,25 +609,41 @@ private:
 template <typename value, typename comparator>
 bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
-
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it < *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr || jt == nullptr);
 }
 
 template <typename value, typename comparator>
 bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
-
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it <= *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr || jt == nullptr);
 }
 
 template <typename value, typename comparator>
 bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
+	if(lhs.size() != rhs.size())
+	{
+		return false;
+	}
 	auto it = lhs.begin();
 	auto jt = rhs.begin();
 	while(it != nullptr && jt != nullptr && *it == *jt)
 	{
 		++it; ++jt;
 	}
-	return(it == nullptr ||  jt == nullptr);
+	return(it == nullptr &&  jt == nullptr);
 }
 
 template <typename value, typename comparator>
@@ -639,13 +655,25 @@ bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value
 template <typename value, typename comparator>
 bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
-
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it >= *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr &&  jt == nullptr);
 }
 
 template <typename value, typename comparator>
 bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
-
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it > *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr &&  jt == nullptr);
 }
 
 #endif
