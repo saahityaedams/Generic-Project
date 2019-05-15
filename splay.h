@@ -4,6 +4,7 @@
 #include <iostream>
 #include <utility>
 #include <functional>
+#include <initializer_list>
 
 using namespace std;
 
@@ -11,11 +12,25 @@ template<typename value, typename comparator = 	less<value> >
 class splay_tree
 {
 public:
-	splay_tree(comparator comp = comparator()) : comp(comp) 
+	// splay_tree(comparator comp = comparator()) : comp(comp) 
+	// {
+	// 	root = head = tail = nullptr;
+	// 	size_ = 0;
+	// }
+	splay_tree() : comp(comparator()) 
 	{
 		root = head = tail = nullptr;
 		size_ = 0;
 	}
+
+	splay_tree(initializer_list<value> init) : comp(comparator()) 
+	{
+		root = head = tail = nullptr;
+		size_ = 0;
+		for(auto i : init)
+			insert(i);	
+	}
+
 	splay_tree(const splay_tree& rhs);
 	splay_tree(splay_tree&& rhs);
 	

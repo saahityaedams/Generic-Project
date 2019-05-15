@@ -72,6 +72,8 @@ int main() {
 #if 0
 	splay_tree<int, greater<int>> st1;
     st1.insert(10);  st1.insert(40);  st1.insert(50); st1.disp(); st1.insert(30);  st1.insert(20);  st1.insert(100);
+	splay_tree<int, greater<int>> st2{10 ,20, 30, 40, 50, 100};
+    // st1.insert(10);  st1.insert(40);  st1.insert(50); st1.insert(30);  st1.insert(20);  st1.insert(100);
 	splay_tree<int, greater<int>> st2(st1);
 
     st1.erase(100);
