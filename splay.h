@@ -221,7 +221,7 @@ private:
 				if(succ->right_child_)
 					(succ->right_child_)->parent_ = root;
 				root->node_value_ = succ->node_value_;
-				root->right_child_ = succ->right_child;
+				root->right_child_ = succ->right_child_;
 				delete succ;
 				return root;
 			}
