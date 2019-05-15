@@ -33,6 +33,7 @@ public:
 	void disp()
 	{
 		display_tree(root, 0);
+		cout << endl << endl;
 	}
 
 	class Iterator;

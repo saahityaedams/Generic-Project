@@ -8,7 +8,7 @@ struct Less
 {
 	bool operator()(const T& x, const T& y)
 	{
-		return x > y;
+		return x < y;
 	}
 };
 
@@ -45,7 +45,7 @@ struct MyDatePred
 int main() {
 
 //bidirectional iterators
-//traversing this through iterators normaly and reverse
+//traversing this through iterators normally and reverse
 #if 0
 	splay_tree<int, greater<int>> st1;
 	st1.insert(10);  st1.insert(40);  st1.insert(50); st1.insert(30);  st1.insert(20);  
@@ -71,16 +71,19 @@ int main() {
 //move constructor and normal constructor
 #if 0
 	splay_tree<int, greater<int>> st1;
-    st1.insert(10);  st1.insert(40);  st1.insert(50); st1.insert(30);  st1.insert(20);  st1.insert(100);
+    st1.insert(10);  st1.insert(40);  st1.insert(50); st1.disp(); st1.insert(30);  st1.insert(20);  st1.insert(100);
 	splay_tree<int, greater<int>> st2(st1);
 
     st1.erase(100);
+	st1.disp();
 
 	cout << boolalpha;
 	cout << st1.find(10).second << endl;
 	cout << st1.find(100).second << endl;
-    cout << st2.find(10).second << endl;
-	cout << st2.find(100).second << endl;
+    st1.find(20); //zig
+	st1.disp();
+	st1.find(30); //zig zag
+	st1.disp();
 
 #endif
 
