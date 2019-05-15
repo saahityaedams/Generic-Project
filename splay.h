@@ -391,7 +391,7 @@ template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::begin() const
 {
-	node* temp = head;
+	node* temp = root;
 	while(temp->left_child_ != nullptr)temp = temp->left_child_;
 	return Iterator(temp);
 	//return Iterator(head);
@@ -402,7 +402,7 @@ template<typename value, typename comparator>
 typename splay_tree<value, comparator>::Iterator
 	splay_tree<value, comparator>::end() const
 {
-	node* temp = head;
+	node* temp = root;
 	while(temp->right_child_ != nullptr)temp = temp->right_child_;
 	return Iterator(temp);
 	// return Iterator(tail);
