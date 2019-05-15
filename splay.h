@@ -54,6 +54,55 @@ public:
 		return(it == lhs.end() &&  jt == rhs.end());
 	}
 
+	friend bool operator!=( splay_tree& lhs,  splay_tree& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	friend bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+	{
+		auto it = lhs.begin();
+		auto jt = rhs.begin();
+		while(it != lhs.end() && jt != rhs.end() && *it < *jt)
+		{
+			++it; ++jt;
+		}
+		return(it == lhs.end() || jt == rhs.end());
+	}
+
+	friend bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+	{
+		auto it = lhs.begin();
+		auto jt = rhs.begin();
+		while(it != lhs.end() && jt != rhs.end() && *it <= *jt)
+		{
+			++it; ++jt;
+		}
+		return(it == lhs.end() || jt == rhs.end());
+	}
+
+	friend bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+	{
+		auto it = lhs.begin();
+		auto jt = rhs.begin();
+		while(it != lhs.end() && jt != rhs.end() && *it > *jt)
+		{
+			++it; ++jt;
+		}
+		return(it == lhs.end() || jt == rhs.end());
+	}
+
+	friend bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+	{
+		auto it = lhs.begin();
+		auto jt = rhs.begin();
+		while(it != lhs.end() && jt != rhs.end() && *it >= *jt)
+		{
+			++it; ++jt;
+		}
+		return(it == lhs.end() || jt == rhs.end());
+	}
+
 private:
 	struct node
 	{
@@ -277,25 +326,8 @@ private:
 		}
 	} 
 };
-/*
-template <typename value, typename comparator>
-bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
 
-template <typename value, typename comparator>
-bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
 
-template <typename value, typename comparator>
-bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
-
-template <typename value, typename comparator>
-bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
-
-template <typename value, typename comparator>
-bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
-
-template <typename value, typename comparator>
-bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs);
-*/
 //Implementation
 
 //Default constructor when given comparator
@@ -713,74 +745,74 @@ private:
 	node* iter;
 };
 
-/*
-bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)<>
-{
-	if(lhs.size() != rhs.size())
-	{
-		return false;
-	}
-	auto it = lhs.begin();
-	auto jt = rhs.begin();
-	while(it != lhs.end() && jt != rhs.end() && *it == *jt)
-	{
-		++it; ++jt;
-	}
-	return(it == lhs.end() &&  jt == rhs.end());
-}
-/*
-template <typename value, typename comparator>
-bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-{
-	return !(lhs == rhs);
-}
+// template<typename value, typename comparator>
+// bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+// {
+// 	if(lhs.size() != rhs.size())
+// 	{
+// 		return false;
+// 	}
+// 	auto it = lhs.begin();
+// 	auto jt = rhs.begin();
+// 	while(it != lhs.end() && jt != rhs.end() && *it == *jt)
+// 	{
+// 		++it; ++jt;
+// 	}
+// 	return(it == lhs.end() &&  jt == rhs.end());
+// }
 
-template <typename value, typename comparator>
-bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-{
-	auto it = lhs.begin();
-	auto jt = rhs.begin();
-	while(it != nullptr && jt != nullptr && *it < *jt)
-	{
-		++it; ++jt;
-	}
-	return(it == nullptr || jt == nullptr);
-}
+// template <typename value, typename comparator>
+// bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+// {
+// 	return !(lhs == rhs);
+// }
 
-template <typename value, typename comparator>
-bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-{
-	auto it = lhs.begin();
-	auto jt = rhs.begin();
-	while(it != nullptr && jt != nullptr && *it <= *jt)
-	{
-		++it; ++jt;
-	}
-	return(it == nullptr || jt == nullptr);
-}
+// template <typename value, typename comparator>
+// bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+// {
+// 	auto it = lhs.begin();
+// 	auto jt = rhs.begin();
+// 	while(it != nullptr && jt != nullptr && *it < *jt)
+// 	{
+// 		++it; ++jt;
+// 	}
+// 	return(it == nullptr || jt == nullptr);
+// }
 
-template <typename value, typename comparator>
-bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-{
-	auto it = lhs.begin();
-	auto jt = rhs.begin();
-	while(it != nullptr && jt != nullptr && *it >= *jt)
-	{
-		++it; ++jt;
-	}
-	return(it == nullptr &&  jt == nullptr);
-}
+// template <typename value, typename comparator>
+// bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+// {
+// 	auto it = lhs.begin();
+// 	auto jt = rhs.begin();
+// 	while(it != nullptr && jt != nullptr && *it <= *jt)
+// 	{
+// 		++it; ++jt;
+// 	}
+// 	return(it == nullptr || jt == nullptr);
+// }
 
-template <typename value, typename comparator>
-bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
-{
-	auto it = lhs.begin();
-	auto jt = rhs.begin();
-	while(it != nullptr && jt != nullptr && *it > *jt)
-	{
-		++it; ++jt;
-	}
-	return(it == nullptr &&  jt == nullptr);
-}
-*/
+// template <typename value, typename comparator>
+// bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+// {
+// 	auto it = lhs.begin();
+// 	auto jt = rhs.begin();
+// 	while(it != nullptr && jt != nullptr && *it >= *jt)
+// 	{
+// 		++it; ++jt;
+// 	}
+// 	return(it == nullptr &&  jt == nullptr);
+// }
+
+// template <typename value, typename comparator>
+// bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
+// {
+// 	auto it = lhs.begin();
+// 	auto jt = rhs.begin();
+// 	while(it != nullptr && jt != nullptr && *it > *jt)
+// 	{
+// 		++it; ++jt;
+// 	}
+// 	return(it == nullptr &&  jt == nullptr);
+// }
+
 #endif
