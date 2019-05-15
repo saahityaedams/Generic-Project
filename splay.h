@@ -609,32 +609,43 @@ private:
 template <typename value, typename comparator>
 bool operator<(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
-//	return (lhs.)
+
 }
 
 template <typename value, typename comparator>
 bool operator<=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
+
 }
 
 template <typename value, typename comparator>
 bool operator==(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
+	auto it = lhs.begin();
+	auto jt = rhs.begin();
+	while(it != nullptr && jt != nullptr && *it == *jt)
+	{
+		++it; ++jt;
+	}
+	return(it == nullptr ||  jt == nullptr);
 }
 
 template <typename value, typename comparator>
 bool operator!=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
+	return !(lhs == rhs);
 }
 
 template <typename value, typename comparator>
 bool operator>=(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
+
 }
 
 template <typename value, typename comparator>
 bool operator>(const splay_tree<value, comparator>& lhs, const splay_tree<value, comparator>& rhs)
 {
+
 }
 
 #endif
