@@ -3,11 +3,74 @@
 
 using namespace std;
 
-//template<typename T>
-/*struct Less
+/*template<typename T>
+struct Less
 {
-	bool(const &T x, const &T y)
+	bool operator()(const T& x, const T& y)
+	{
+		return x > y;
+	}
 };*/
+
+struct MyDate
+{
+	public:
+	MyDate():dd_(0),mm_(0), yy_(0) {} 
+	MyDate(int dd, int mm, int yy) : dd_(dd), mm_(mm), yy_(yy) { }
+	friend ostream& operator<<(ostream&, const MyDate&);
+	friend bool operator<(const MyDate& lhs, const MyDate& rhs);
+	friend bool compare_date(const MyDate& lhs, const MyDate& rhs);
+	private:
+	int dd_;
+	int mm_;
+	int yy_;
+	
+};
+ostream& operator<<(ostream& o, const MyDate& d)
+{
+	return o << d.dd_ << "-" << d.mm_ << "-" << d.yy_ << "\n";
+}
+
+bool operator<(const MyDate& lhs, const MyDate& rhs)
+{
+	if(lhs.yy_ < rhs.yy_)
+		return true;
+	if(lhs.yy_ == rhs.yy_ && lhs.mm_ < rhs.mm_)
+		return true;
+	if(lhs.yy_ == rhs.yy_ && lhs.mm_ == rhs.mm_ && lhs.dd_ < rhs.dd_)
+		return true;
+	return false;
+
+
+}
+
+template<typename ptr_t>
+void disp(ptr_t first, ptr_t last)
+{
+	while(first != last) // while(first < last)
+	{
+		cout << *first << "\t";
+		++first; // first += 1
+	}
+	cout << "\n";
+}
+bool compare_date(const MyDate& lhs, const MyDate& rhs)
+{
+	return lhs.dd_ < rhs.dd_;
+}
+struct MyLess
+{
+	bool operator()(int x, int y) { return x < y; }
+};
+struct MyPred
+{
+	bool operator()(int x, int y) { return x % 10 < y % 10; }
+};
+struct MyDatePred
+{
+//	bool operator()(const MyDate& x, const MyDate& y) { return x  < y ; }
+	bool operator()(const MyDate& x, const MyDate& y) { return compare_date(x, y); }
+};
 
 int main() {
 	splay_tree<int, greater<int>> st;
@@ -69,6 +132,21 @@ cout << st;
 	f10 = st.find(10);
 	cout <<"Hallelujah "<<  *(f10.first) << endl;
 	cout <<"Hallelujah "<<  (f10.second) << endl;
+	MyDate d[] = {
+		{26, 12, 2004},
+		{11, 9, 2001},	
+		{11, 1, 1966},
+		{26, 12, 2004},
+		{11, 9, 2001},	
+		{26, 1, 2001},
+		{30, 1, 1948},
+		{11, 9, 2001},	
+		{26, 12, 2004} 
+	};
+	splay_tree<MyDate, MyDatePred> s4;
+	for(auto it : d)
+		s4.insert(it);
+	cout << s4;
 	// cout <<"Hallelujah "<<  *(st.find(100).first) << endl;
 	// st.erase(100);
 	// cout <<"Hallelujah "<<  *(st.find(100).first) << endl;
