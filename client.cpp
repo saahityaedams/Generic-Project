@@ -1,6 +1,7 @@
 #include "splay.h"
 // #include <functional>
-
+#include<algorithm>
+#include<vector>
 using namespace std;
 
 template<typename T>
@@ -46,7 +47,7 @@ int main() {
 
 //bidirectional iterators
 //traversing this through iterators normally and reverse
-#if 1
+#if 0
 	splay_tree<int, greater<int>> st1;
 	st1.insert(10);  st1.insert(40);  st1.insert(50); st1.insert(30);  st1.insert(20);  
     auto it = st1.begin();
@@ -75,7 +76,8 @@ int main() {
 	splay_tree<int, greater<int>> st2{10 ,20, 30, 40, 50, 100};
     // st1.insert(10);  st1.insert(40);  st1.insert(50); st1.insert(30);  st1.insert(20);  st1.insert(100);
 	// splay_tree<int, greater<int>> st2(st1);
-
+	st1.disp();
+	cout << "deleted 100" << endl;
     st1.erase(100);
 	st1.disp();
 
@@ -93,7 +95,7 @@ int main() {
 #if 0
 	splay_tree<int, greater<int>> st1;
 	splay_tree<int, greater<int>> st2;
-    splay_tree<int, greater<int>> st3;
+	splay_tree<int, greater<int>> st3;
 	st1.insert(10);  st1.insert(40);  st1.insert(50); st1.insert(30);  st1.insert(20);
 
     st2 = st1;
@@ -148,6 +150,29 @@ int main() {
 		s4.insert(it);
 
 	cout << s4;
+#endif
+
+#if 1
+	splay_tree<int> st1{10, 20, 30, 40, 50};
+	auto it = find(st1.begin(), st1.end(), 20);
+	cout <<  *it << endl;
+
+	vector<int> v1{1, 2, 3, 4, 5};
+	
+	copy(st1.begin(), st1.end(), v1.begin()+1);
+	for(auto e : v1)
+	{
+		cout << e << "\t";
+	}
+	cout << endl;
+
+	// copy(v1.begin(), v1.end(), st1.begin());
+	// for(auto e : st1)
+	// {
+	// 	cout << e << "\t";
+	// }
+	// cout << endl;
 
 #endif
+
 }

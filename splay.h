@@ -8,7 +8,7 @@
 
 using namespace std;
 
-template<typename value_type, typename comparator = 	less<value_type> >
+template<typename value_type, typename comparator = less<value_type> >
 class splay_tree
 {
 public:
@@ -506,7 +506,7 @@ void splay_tree<value_type, comparator>::erase(const value_type& val)
 
 //Iterator class definition
 template<typename value_type, typename comparator>
-class splay_tree<value_type, comparator>::Iterator
+class splay_tree<value_type, comparator>::Iterator : public std::iterator<std::forward_iterator_tag, splay_tree<value_type, comparator>::node*>
 {
 public:
 	explicit Iterator(node* node_ = nullptr) : iter(node_){	}
